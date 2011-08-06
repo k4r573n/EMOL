@@ -1,0 +1,284 @@
+<html>
+<head>
+   <title>OSM Local Tiles</title>
+   <link rel="stylesheet" href="style.css" type="text/css" />
+   <!-- bring in the OpenLayers javascript library
+        (here we bring it from the remote site, but you could
+        easily serve up this javascript yourself) -->
+   <script src="OpenLayers.js"></script>
+
+   <!-- bring in the OpenStreetMap OpenLayers layers.
+        Using this hosted file will make sure we are kept up
+        to date with any necessary changes -->
+   <script src="OpenStreetMap.js"></script>
+
+   <script type="text/javascript">
+// Start position for the map (hardcoded here for simplicity)
+       var lat=53.292;
+       var lon=10.50;
+       var zoom=16;
+
+       var map, //complex object of type OpenLayers.Map
+			 drawControls,
+			 dragFeature,
+       measureControls;
+
+       //Initialise the 'map' object
+       function init() {
+
+           map = new OpenLayers.Map ("map", {
+
+               maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+               maxResolution: 156543.0339,
+               numZoomLevels: 19,
+               units: 'm',
+               projection: new OpenLayers.Projection("EPSG:900913"),
+               displayProjection: new OpenLayers.Projection("EPSG:4326"),
+
+               controls:[
+                   new OpenLayers.Control.Navigation(),
+                   new OpenLayers.Control.PanZoomBar(),
+                   //new OpenLayers.Control.OverviewMap(),
+                   new OpenLayers.Control.ScaleLine({geodesic: true}),
+                   //new OpenLayers.Control.Permalink('perm link'),
+                   new OpenLayers.Control.MousePosition(), //<-
+									 new OpenLayers.Control.LayerSwitcher(), //<-
+                   //new OpenLayers.Control.Attribution()
+               ]
+           } );
+
+           // Measure controls
+           // http://openlayers.org/dev/examples/measure.html 
+            
+           // style the sketch fancy
+            var sketchSymbolizers = {
+                "Point": {
+                    pointRadius: 4,
+                    graphicName: "square",
+                    fillColor: "white",
+                    fillOpacity: 1,
+                    strokeWidth: 1,
+                    strokeOpacity: 1,
+                    strokeColor: "#333"
+                },
+                "Line": {
+                    strokeWidth: 3,
+                    strokeOpacity: 1,
+                    strokeColor: "#333",
+                    strokeDashstyle: "dash"
+                },
+                "Polygon": {
+                    strokeWidth: 2,
+                    strokeOpacity: 1,
+                    strokeColor: "#666",
+                    fillColor: "white",
+                    fillOpacity: 0.3
+                }
+            };
+
+            var style = new OpenLayers.Style();
+            style.addRules([
+                new OpenLayers.Rule({symbolizer: sketchSymbolizers})
+            ]);
+            var styleMap = new OpenLayers.StyleMap({"default": style});
+            
+            measureControls = {
+                line: new OpenLayers.Control.Measure(
+                    OpenLayers.Handler.Path, {
+                        persist: true,
+                        handlerOptions: {
+                            layerOptions: {styleMap: styleMap}
+                        }
+                    }
+                ),
+                polygon: new OpenLayers.Control.Measure(
+                    OpenLayers.Handler.Polygon, {
+                        persist: true,
+                        handlerOptions: {
+                            layerOptions: {styleMap: styleMap}
+                        }
+                    }
+                )
+            };
+            
+            var control;
+            for(var key in measureControls) {
+                control = measureControls[key];
+                control.geodesic = true;//take this away if you want to make geodesic optional
+                control.setImmediate(true);
+                control.events.on({
+                    "measure": handleMeasurements,
+                    "measurepartial": handleMeasurements
+                });
+                map.addControl(control);
+            }
+
+            document.getElementById('noneToggle').checked = true;
+           // END Measure controls
+
+           layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+           //layerMapnik.setOpacity(0.4);
+           map.addLayer(layerMapnik); 
+
+           layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+           //layerTilesAtHome.setOpacity(0.4);
+           map.addLayer(layerTilesAtHome);
+
+           layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+           //layerCycleMap.setOpacity(0.4);
+           map.addLayer(layerCycleMap);
+
+//           // This is the layer that uses the locally stored tiles
+//           var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "tiles/mapz${z}y${y}x${x}.png", {numZoomLevels: 19, alpha: true, isBaseLayer: false});
+//           newLayer.setOpacity(0.5);
+//           map.addLayer(newLayer);
+//           // This is the end of the local layer
+
+           //draw feature - see:
+           //view-source:http://openlayers.org/dev/examples/draw-feature.html
+           var drawLayer = new OpenLayers.Layer.Vector("new places",
+                   {rendererOptions: {yOrdering: true}, isBaseLayer: false});
+					 map.addLayer(drawLayer);
+
+					 drawControls = {
+                    point: new OpenLayers.Control.DrawFeature(drawLayer,
+                                OpenLayers.Handler.Point),
+                    line: new OpenLayers.Control.DrawFeature(drawLayer,
+                                OpenLayers.Handler.Path),
+ 	                 polygon: new OpenLayers.Control.DrawFeature(drawLayer,
+ 																OpenLayers.Handler.Polygon)
+					 };
+					 for(var key in drawControls) {
+             drawControls[key].handler.stopDown = false;//for panning
+             drawControls[key].handler.stopUp = false;//   "   "
+						 map.addControl(drawControls[key]);
+					 }
+           document.getElementById('noneDrawToggle').checked = true;
+
+					  // Add a drag feature control to move features around.
+					dragFeature = new OpenLayers.Control.DragFeature(drawLayer);
+											             
+					map.addControl(dragFeature);
+																	             
+          //position in map
+           if( ! map.getCenter() ){
+               var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+               map.setCenter (lonLat, zoom);
+           }
+       }
+        function test() {
+          //alert("bla");
+
+          var control = drawControls["polygon"];
+          control.activate();
+        }
+
+        function toggleMoveFeatures(element) {
+            if(element.checked) {
+                dragFeature.activate();
+                //disable here drawing and measure mode while moving
+            } else {
+                dragFeature.deactivate();
+            }
+        }
+
+        function toggleDrawControl(element) {
+            for(key in drawControls) {
+                var control = drawControls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+
+        function handleMeasurements(event) {
+            var geometry = event.geometry;
+            var units = event.units;
+            var order = event.order;
+            var measure = event.measure;
+            var element = document.getElementById('output');
+            var out = "";
+            if(order == 1) {
+                out += "measure: " + measure.toFixed(3) + " " + units;
+            } else {
+                out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
+            }
+            element.innerHTML = out;
+        }
+
+        function toggleMeasureControl(element) {
+            for(key in measureControls) {
+                var control = measureControls[key];
+                if(element.value == key && element.checked) {
+                    control.activate();
+                } else {
+                    control.deactivate();
+                }
+            }
+        }
+        
+   </script>
+</head>
+
+<!-- body.onload is called once the page is loaded (call the 'init' function) -->
+<body onload="init();">
+
+   <!-- define a DIV into which the map will appear. Make it take up the whole window -->
+   <div style="width:100%; height:90%" id="map"></div>
+
+	 <br>
+	 <a href="javascript:test();">test</a> - 
+   <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
+   <label for="moveFeatures">move Feature</label>
+   <div id="output">messung:
+               </div>
+   <div id="measuretools">
+      <ul id="controlToggle">
+            <li>
+
+                <input type="radio" name="type" value="none" id="noneToggle"
+                       onclick="toggleMeasureControl(this);" checked="checked" />
+                <label for="noneToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleMeasureControl(this);" />
+                <label for="lineToggle">measure distance</label>
+            </li>
+            <li>
+
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleMeasureControl(this);" />
+                <label for="polygonToggle">measure area</label>
+            </li>
+
+        </ul>
+    </div>
+    <div id="drawing_tools">
+ <ul id="controlToggle">
+            <li>
+
+                <input type="radio" name="type" value="none" id="noneDrawToggle"
+                       onclick="toggleDrawControl(this);" checked="checked" />
+                <label for="noneDrawToggle">navigate</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleDrawControl(this);" />
+                <label for="pointToggle">draw point</label>
+            </li>
+            <li>
+
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleDrawControl(this);" />
+                <label for="lineToggle">draw line</label>
+            </li>
+            <li>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleDrawControl(this);" />
+                <label for="polygonToggle">draw polygon</label>
+            </li>
+        </ul>
+
+    </div>
+
+</body>
+
+</html>
