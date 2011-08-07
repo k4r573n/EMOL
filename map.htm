@@ -11,6 +11,7 @@
         Using this hosted file will make sure we are kept up
         to date with any necessary changes -->
    <script src="OpenStreetMap.js"></script>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 		<style>
 			a.test { font-weight: bold; }
 
@@ -35,7 +36,7 @@
 					*/
 			}
 
-			#InfoPanel {
+			div.InfoPanel {
 					background: none repeat scroll 0 0 #FAF9F3;
 					border-left: 1px solid #CCC4A0;
 					bottom: 25px;
@@ -51,233 +52,260 @@
 			
 		</style>
 
-   <script type="text/javascript">
-// Start position for the map (hardcoded here for simplicity)
-       var lat=53.292;
-       var lon=10.50;
-       var zoom=16;
+<script type="text/javascript">
+    // Start position for the map (hardcoded here for simplicity)
+    var lat=53.292;
+    var lon=10.50;
+    var zoom=16;
 
-      var map, //complex object of type OpenLayers.Map
-      drawControls,
-      dragFeature,
-      measureControls;
-      // Missing tiles from the map
-      OpenLayers.Util.onImageLoadError = function(){this.src='img/tile_not_found.gif';}
-      OpenLayers.Tile.Image.useBlankTile=false; 
+    var map, //complex object of type OpenLayers.Map
+    drawControls,
+    dragFeature,
+    measureControls;
+    // Missing tiles from the map
+    OpenLayers.Util.onImageLoadError = function(){this.src='img/tile_not_found.gif';}
+    OpenLayers.Tile.Image.useBlankTile=false; 
 
-      // allow testing of specific renderers via "?renderer=Canvas", etc
-      // use ist vor lat lon
-      //var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
-      //renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+    // allow testing of specific renderers via "?renderer=Canvas", etc
+    // use ist vor lat lon
+    //var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+    //renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
 
+    $(document).ready(function() {
+            // use this to reset a single form
+            init();
+            $("#test").click(function(event){
+                event.preventDefault();
+                //$(this).hide("slow");
+                $("#PointInfoPanel > #describtion").empty().append("new desc");
+            });
+     });
 
-       //Initialise the 'map' object
-       function init() {
+    //Initialise the 'map' object
+    function init() {
 
-           map = new OpenLayers.Map ("map", {
+        map = new OpenLayers.Map ("map", {
 
-               maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
-               maxResolution: 156543.0339,
-               numZoomLevels: 19,
-               units: 'm',
-               projection: new OpenLayers.Projection("EPSG:900913"),
-               displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
+            maxResolution: 156543.0339,
+            numZoomLevels: 19,
+            units: 'm',
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            displayProjection: new OpenLayers.Projection("EPSG:4326"),
 
-               controls:[
-                   new OpenLayers.Control.Navigation(),
-                   new OpenLayers.Control.PanZoomBar(),
-                   //new OpenLayers.Control.OverviewMap(),
-                   new OpenLayers.Control.ScaleLine({geodesic: true}),
-                   //new OpenLayers.Control.Permalink('perm link'),
-                   new OpenLayers.Control.MousePosition(), //<-
-									 new OpenLayers.Control.LayerSwitcher(), //<-
-                   //new OpenLayers.Control.Attribution()
-               ]
-           } );
+            controls:[
+                new OpenLayers.Control.Navigation(),
+                new OpenLayers.Control.PanZoomBar(),
+                //new OpenLayers.Control.OverviewMap(),
+                new OpenLayers.Control.ScaleLine({geodesic: true}),
+                //new OpenLayers.Control.Permalink('perm link'),
+                new OpenLayers.Control.MousePosition(), //<-
+                new OpenLayers.Control.LayerSwitcher(), //<-
+                //new OpenLayers.Control.Attribution()
+            ]
+        } );
 
-           // Measure controls
-           // http://openlayers.org/dev/examples/measure.html 
-            
-           // style the sketch fancy
-            var sketchSymbolizers = {
-                "Point": {
-                    pointRadius: 4,
-                    graphicName: "square",
-                    fillColor: "white",
-                    fillOpacity: 1,
-                    strokeWidth: 1,
-                    strokeOpacity: 1,
-                    strokeColor: "#333"
-                },
-                "Line": {
-                    strokeWidth: 3,
-                    strokeOpacity: 1,
-                    strokeColor: "#333",
-                    strokeDashstyle: "dash"
-                },
-                "Polygon": {
-                    strokeWidth: 2,
-                    strokeOpacity: 1,
-                    strokeColor: "#666",
-                    fillColor: "white",
-                    fillOpacity: 0.3
-                }
-            };
+        // Measure controls
+        // http://openlayers.org/dev/examples/measure.html 
 
-            var style = new OpenLayers.Style();
+        // style the sketch fancy
+        var sketchSymbolizers = {
+            "Point": {
+        pointRadius: 4,
+                     graphicName: "square",
+                     fillColor: "white",
+                     fillOpacity: 1,
+                     strokeWidth: 1,
+                     strokeOpacity: 1,
+                     strokeColor: "#333"
+            },
+            "Line": {
+        strokeWidth: 3,
+                     strokeOpacity: 1,
+                     strokeColor: "#333",
+                     strokeDashstyle: "dash"
+            },
+            "Polygon": {
+        strokeWidth: 2,
+                     strokeOpacity: 1,
+                     strokeColor: "#666",
+                     fillColor: "white",
+                     fillOpacity: 0.3
+            }
+        };
+
+        var style = new OpenLayers.Style();
             style.addRules([
-                new OpenLayers.Rule({symbolizer: sketchSymbolizers})
-            ]);
-            var styleMap = new OpenLayers.StyleMap({"default": style});
-            
-            measureControls = {
-                line: new OpenLayers.Control.Measure(
+                    new OpenLayers.Rule({symbolizer: sketchSymbolizers})
+                    ]);
+        var styleMap = new OpenLayers.StyleMap({"default": style});
+
+        measureControls = {
+            line: new OpenLayers.Control.Measure(
                     OpenLayers.Handler.Path, {
                         persist: true,
                         handlerOptions: {
                             layerOptions: {styleMap: styleMap}
                         }
                     }
-                ),
-                polygon: new OpenLayers.Control.Measure(
+            ),
+            polygon: new OpenLayers.Control.Measure(
                     OpenLayers.Handler.Polygon, {
                         persist: true,
                         handlerOptions: {
                             layerOptions: {styleMap: styleMap}
                         }
                     }
-                )
-            };
-            
-            var control;
-            for(var key in measureControls) {
-                control = measureControls[key];
-                control.geodesic = true;//take this away if you want to make geodesic optional
-                control.setImmediate(true);
-                control.events.on({
+            )
+        };
+
+        var control;
+        for(var key in measureControls) {
+            control = measureControls[key];
+            control.geodesic = true;//take this away if you want to make geodesic optional
+            control.setImmediate(true);
+            control.events.on({
                     "measure": handleMeasurements,
                     "measurepartial": handleMeasurements
-                });
-                map.addControl(control);
-            }
-
-            document.getElementById('noneToggle').checked = true;
-           // END Measure controls
-
-           layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
-           //layerMapnik.setOpacity(0.4);
-           map.addLayer(layerMapnik); 
-
-           layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-           //layerTilesAtHome.setOpacity(0.4);
-           map.addLayer(layerTilesAtHome);
-
-           layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
-           //layerCycleMap.setOpacity(0.4);
-           map.addLayer(layerCycleMap);
-
-//           // This is the layer that uses the locally stored tiles
-//           var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "tiles/mapz${z}y${y}x${x}.png", {numZoomLevels: 19, alpha: true, isBaseLayer: false});
-//           newLayer.setOpacity(0.5);
-//           map.addLayer(newLayer);
-//           // This is the end of the local layer
-
-           //draw feature - see:
-           //view-source:http://openlayers.org/dev/examples/draw-feature.html
-           var drawLayer = new OpenLayers.Layer.Vector("new places",
-                   {rendererOptions: {yOrdering: true}, isBaseLayer: false});
-					 map.addLayer(drawLayer);
-
-					 drawControls = {
-                    point: new OpenLayers.Control.DrawFeature(drawLayer,
-                                OpenLayers.Handler.Point),
-                    line: new OpenLayers.Control.DrawFeature(drawLayer,
-                                OpenLayers.Handler.Path),
- 	                 polygon: new OpenLayers.Control.DrawFeature(drawLayer,
- 																OpenLayers.Handler.Polygon)
-					 };
-					 for(var key in drawControls) {
-             drawControls[key].handler.stopDown = false;//for panning
-             drawControls[key].handler.stopUp = false;//   "   "
-						 map.addControl(drawControls[key]);
-					 }
-           document.getElementById('noneDrawToggle').checked = true;
-
-					  // Add a drag feature control to move features around.
-					dragFeature = new OpenLayers.Control.DragFeature(drawLayer);
-											             
-					map.addControl(dragFeature);
-																	             
-          //position in map
-           if( ! map.getCenter() ){
-               var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-               map.setCenter (lonLat, zoom);
-           }
-       }
-        function test() {
-          //alert("bla");
-
-          var control = drawControls["polygon"];
-          control.activate();
+            });
+            map.addControl(control);
         }
 
-        function toggleMoveFeatures(element) {
-            if(element.checked) {
-                dragFeature.activate();
-                //disable here drawing and measure mode while moving
+        document.getElementById('noneToggle').checked = true;
+        // END Measure controls
+
+        layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
+        //layerMapnik.setOpacity(0.4);
+        map.addLayer(layerMapnik); 
+
+        layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+        //layerTilesAtHome.setOpacity(0.4);
+        map.addLayer(layerTilesAtHome);
+
+        layerCycleMap = new OpenLayers.Layer.OSM.CycleMap("CycleMap");
+        //layerCycleMap.setOpacity(0.4);
+        map.addLayer(layerCycleMap);
+
+        // This is the layer that uses the locally stored tiles
+        //var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "tiles/mapz${z}y${y}x${x}.png", {numZoomLevels: 19, alpha: true, isBaseLayer: false});
+        //newLayer.setOpacity(0.5);
+        //map.addLayer(newLayer);
+        // This is the end of the local layer
+
+        //draw feature - see:
+        //view-source:http://openlayers.org/dev/examples/draw-feature.html
+        var drawLayer = new OpenLayers.Layer.Vector("new places",
+                {rendererOptions: {yOrdering: true}, isBaseLayer: false});
+        map.addLayer(drawLayer);
+
+        drawControls = {
+            point: new OpenLayers.Control.DrawFeature(drawLayer,
+                            OpenLayers.Handler.Point),
+            line: new OpenLayers.Control.DrawFeature(drawLayer,
+                            OpenLayers.Handler.Path),
+            polygon: new OpenLayers.Control.DrawFeature(drawLayer,
+                            OpenLayers.Handler.Polygon)
+        };
+        for(var key in drawControls) {
+            drawControls[key].handler.stopDown = false;//for panning
+            drawControls[key].handler.stopUp = false;//   "   "
+            map.addControl(drawControls[key]);
+        }
+        document.getElementById('noneDrawToggle').checked = true;
+
+        // Add a drag feature control to move features around.
+        dragFeature = new OpenLayers.Control.DragFeature(drawLayer);
+
+        map.addControl(dragFeature);
+
+        //position in map
+        if( ! map.getCenter() ){
+            var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            map.setCenter (lonLat, zoom);
+        }
+    }
+
+    function test() {
+      //alert("bla");
+
+      var control = drawControls["polygon"];
+      control.activate();
+    }
+
+    function toggleMoveFeatures(element) {
+        if(element.checked) {
+            dragFeature.activate();
+            //disable here drawing and measure mode while moving
+        } else {
+            dragFeature.deactivate();
+        }
+    }
+
+    function toggleDrawControl(element) {
+        for(key in drawControls) {
+            var control = drawControls[key];
+            if(element.value == key && element.checked) {
+                control.activate();
             } else {
-                dragFeature.deactivate();
+                control.deactivate();
             }
         }
+    }
 
-        function toggleDrawControl(element) {
-            for(key in drawControls) {
-                var control = drawControls[key];
-                if(element.value == key && element.checked) {
-                    control.activate();
-                } else {
-                    control.deactivate();
-                }
-            }
+    function handleMeasurements(event) {
+        var geometry = event.geometry;
+        var units = event.units;
+        var order = event.order;
+        var measure = event.measure;
+        var element = document.getElementById('output');
+        var out = "";
+        if(order == 1) {
+            out += "measure: " + measure.toFixed(3) + " " + units;
+        } else {
+            out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
         }
+        element.innerHTML = out;
+    }
 
-        function handleMeasurements(event) {
-            var geometry = event.geometry;
-            var units = event.units;
-            var order = event.order;
-            var measure = event.measure;
-            var element = document.getElementById('output');
-            var out = "";
-            if(order == 1) {
-                out += "measure: " + measure.toFixed(3) + " " + units;
+    function toggleMeasureControl(element) {
+        for(key in measureControls) {
+            var control = measureControls[key];
+            if(element.value == key && element.checked) {
+                control.activate();
             } else {
-                out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
-            }
-            element.innerHTML = out;
-        }
-
-        function toggleMeasureControl(element) {
-            for(key in measureControls) {
-                var control = measureControls[key];
-                if(element.value == key && element.checked) {
-                    control.activate();
-                } else {
-                    control.deactivate();
-                }
+                control.deactivate();
             }
         }
-        
+    }
+    
    </script>
 </head>
 
 <!-- body.onload is called once the page is loaded (call the 'init' function) -->
-<body onload="init();">
+<body>
 
    <!-- define a DIV into which the map will appear. Make it take up the whole window -->
    <div id="map" class="olMap" style="right : 250px;"></div>
-	 <div id="InfoPanel" style="display: block;">Info Block</div>
+	 <div id="PointInfoPanel" class="InfoPanel" style="display: block;">
+		 <h3>Info Point</h3>goto
+		 lat: <div id="lat">0.00</div>
+		 lon: <div id="lon">0.00</div>
+		 describtion:
+		 <div id="describtion">desc</div>
+		 <div id="creation_date">date</div>
 
-	 <a href="javascript:test();">test</a> - 
+	 </div>
+	 <div id="LineInfoPanel" class="InfoPanel" style="display: none;">
+		 <h3>Info Line</h3>goto
+		 length: <div id="lineLength">0</div>m
+		 node count: <div id="nodeConut">0</div>
+		 describtion:
+		 <div id="describtion">desc</div>
+		 <div id="creation_date">date</div>
+
+	 </div>
+
+	 <a href="#" id="test">test</a> - 
    <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
    <label for="moveFeatures">move Feature</label>
    <div id="output">messung:

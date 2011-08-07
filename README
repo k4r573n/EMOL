@@ -6,6 +6,11 @@ and use the measure tools
 
 to plan the next walking trip
 
+Todo:
+impement text field to enter describtions to each feature
+on the right handside like in the hitchhiking map
+(use jquery)
+
 Links:
 http://docs.jquery.com/
 http://openlayers.org/
