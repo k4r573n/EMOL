@@ -196,6 +196,12 @@
         //view-source:http://openlayers.org/dev/examples/draw-feature.html
         var drawLayer = new OpenLayers.Layer.Vector("new places",
                 {rendererOptions: {yOrdering: true}, isBaseLayer: false});
+
+        drawLayer.events.on({
+                'featureselected': onFeatureSelect,
+                'featureunselected': onFeatureUnselect
+        });
+
         map.addLayer(drawLayer);
 
         drawControls = {
@@ -204,25 +210,81 @@
             line: new OpenLayers.Control.DrawFeature(drawLayer,
                             OpenLayers.Handler.Path),
             polygon: new OpenLayers.Control.DrawFeature(drawLayer,
-                            OpenLayers.Handler.Polygon)
+                            OpenLayers.Handler.Polygon),
+
         };
+
         for(var key in drawControls) {
             drawControls[key].handler.stopDown = false;//for panning
             drawControls[key].handler.stopUp = false;//   "   "
             map.addControl(drawControls[key]);
         }
+
+        //http://openlayers.org/dev/examples/highlight-feature.html
+        var highlightCtrl = new OpenLayers.Control.SelectFeature(
+                    drawLayer, {
+                        hover: true,
+                        highlightOnly: true,
+                        renderIntent: "temporary",
+                        //eventListeners: {
+                        //    beforefeaturehighlighted: report,
+                        //    featurehighlighted: report,
+                        //    featureunhighlighted: report
+                        //}
+                    }
+            );
+        var selectCtrl = new OpenLayers.Control.SelectFeature(
+                    drawLayer,
+                    {
+                        clickout: false, toggle: false,
+                        multiple: false, hover: false,
+                        toggleKey: "ctrlKey", // ctrl key removes from selection
+                        multipleKey: "shiftKey", // shift key adds to selection
+                        box: false
+                    }
+                );
+        map.addControl(highlightCtrl);
+        map.addControl(selectCtrl);
+
+        //this should be deactive while drawing
+        highlightCtrl.activate();
+        selectCtrl.activate();
+
+
         document.getElementById('noneDrawToggle').checked = true;
 
         // Add a drag feature control to move features around.
         dragFeature = new OpenLayers.Control.DragFeature(drawLayer);
-
         map.addControl(dragFeature);
+
+        //add an nice tool bar - don't work may cause I worte my own
+        //map.addControl( new OpenLayers.Control.EditingToolbar(drawLayer));
 
         //position in map
         if( ! map.getCenter() ){
             var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
             map.setCenter (lonLat, zoom);
         }
+    }
+
+    function onFeatureSelect(evt) {
+        var feature = evt.feature;
+        var lonlat = new OpenLayers.LonLat(0,0);
+        //what feature is it?
+        if (feature.geometry.CLASS_NAME == "OpenLayers.Geometry.Point") {
+            //$("#PointInfoPanel > #describtion").empty().append(feature.geometry.toString());
+            //$("#PointInfoPanel > #describtion").empty().append(feature.geometry.bounds.getCenterLonLat());
+            lonlat = feature.geometry.bounds.getCenterLonLat().transform(
+                        map.getProjectionObject(),
+                        new OpenLayers.Projection("EPSG:4326"));
+        }
+        $("#PointInfoPanel > #lat").empty().append(lonlat.lat);
+        $("#PointInfoPanel > #lon").empty().append(lonlat.lon);
+        //$("#PointInfoPanel > #lat").empty().append("kein punkt");
+    }
+    function onFeatureUnselect(evt) {
+        feature = evt.feature;
+
     }
 
     function test() {
