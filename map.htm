@@ -11,6 +11,45 @@
         Using this hosted file will make sure we are kept up
         to date with any necessary changes -->
    <script src="OpenStreetMap.js"></script>
+		<style>
+			a.test { font-weight: bold; }
+
+			#map {
+					/* background-color: #93B3CD; */
+					bottom: 25px;
+					/* color: #E5F0F9; */
+					left: 0;
+					min-width: 600px;
+					position: absolute;
+					right: 0;
+					/* text-align: center; */
+					top: 80px;
+			}
+
+			div.olMap {
+				/*
+					cursor: default;
+					margin: 0 !important;
+					padding: 0 !important;
+					z-index: 0;
+					*/
+			}
+
+			#InfoPanel {
+					background: none repeat scroll 0 0 #FAF9F3;
+					border-left: 1px solid #CCC4A0;
+					bottom: 25px;
+					display: block;
+					/* overflow-x: hidden; */
+					/* padding: 0; */
+					position: absolute;
+					right: 0;
+					top: 80px;
+					width: 250px;
+			}
+
+			
+		</style>
 
    <script type="text/javascript">
 // Start position for the map (hardcoded here for simplicity)
@@ -18,10 +57,19 @@
        var lon=10.50;
        var zoom=16;
 
-       var map, //complex object of type OpenLayers.Map
-			 drawControls,
-			 dragFeature,
-       measureControls;
+      var map, //complex object of type OpenLayers.Map
+      drawControls,
+      dragFeature,
+      measureControls;
+      // Missing tiles from the map
+      OpenLayers.Util.onImageLoadError = function(){this.src='img/tile_not_found.gif';}
+      OpenLayers.Tile.Image.useBlankTile=false; 
+
+      // allow testing of specific renderers via "?renderer=Canvas", etc
+      // use ist vor lat lon
+      //var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
+      //renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+
 
        //Initialise the 'map' object
        function init() {
@@ -226,57 +274,35 @@
 <body onload="init();">
 
    <!-- define a DIV into which the map will appear. Make it take up the whole window -->
-   <div style="width:100%; height:90%" id="map"></div>
+   <div id="map" class="olMap" style="right : 250px;"></div>
+	 <div id="InfoPanel" style="display: block;">Info Block</div>
 
-	 <br>
 	 <a href="javascript:test();">test</a> - 
    <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
    <label for="moveFeatures">move Feature</label>
    <div id="output">messung:
                </div>
    <div id="measuretools">
-      <ul id="controlToggle">
-            <li>
 
                 <input type="radio" name="type" value="none" id="noneToggle"
                        onclick="toggleMeasureControl(this);" checked="checked" />
                 <label for="noneToggle">navigate</label>
-            </li>
-            <li>
                 <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleMeasureControl(this);" />
                 <label for="lineToggle">measure distance</label>
-            </li>
-            <li>
 
                 <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleMeasureControl(this);" />
                 <label for="polygonToggle">measure area</label>
-            </li>
-
-        </ul>
     </div>
     <div id="drawing_tools">
- <ul id="controlToggle">
-            <li>
-
                 <input type="radio" name="type" value="none" id="noneDrawToggle"
                        onclick="toggleDrawControl(this);" checked="checked" />
                 <label for="noneDrawToggle">navigate</label>
-            </li>
-            <li>
                 <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleDrawControl(this);" />
                 <label for="pointToggle">draw point</label>
-            </li>
-            <li>
-
                 <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleDrawControl(this);" />
                 <label for="lineToggle">draw line</label>
-            </li>
-            <li>
                 <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleDrawControl(this);" />
                 <label for="polygonToggle">draw polygon</label>
-            </li>
-        </ul>
-
     </div>
 
 </body>
