@@ -7,11 +7,14 @@
         easily serve up this javascript yourself) -->
    <script src="OpenLayers.js"></script>
 
+   <!-- needed to use google maps -->
+   <script src="http://maps.google.com/maps/api/js?v=3.5&amp;sensor=false"></script>
+
    <!-- bring in the OpenStreetMap OpenLayers layers.
         Using this hosted file will make sure we are kept up
         to date with any necessary changes -->
    <script src="OpenStreetMap.js"></script>
-   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+   <script src="jquery-1.6.2.min.js"></script>
 		<style>
 			a.test { font-weight: bold; }
 
@@ -49,16 +52,40 @@
 					width: 250px;
 			}
 
+      #log {
+          background: none repeat scroll 0 0 #000000;
+          border-radius: 3px 3px 3px 3px;
+          color: #FFFFFF;
+          display: block;
+          font-family: Courier,serif;
+          font-size: 10px;
+          height: 320px;
+          line-height: 12px;
+          margin: 0;
+          max-height: 620px;
+          max-width: 700px;
+          padding: 0;
+          width: 450px;
+      }
+
 			
 		</style>
 
 <script type="text/javascript">
+/*
+* most copied from Hitchwiki Maps: main.js
+* Requires:
+* - jquery.js
+* - OpenLayers.js
+*/ 
+
     // Start position for the map (hardcoded here for simplicity)
     var lat=53.292;
     var lon=10.50;
     var zoom=16;
 
     var map, //complex object of type OpenLayers.Map
+    hhplaces, //hitchhiking spots
     drawControls,
     dragFeature,
     measureControls;
@@ -66,18 +93,79 @@
     OpenLayers.Util.onImageLoadError = function(){this.src='img/tile_not_found.gif';}
     OpenLayers.Tile.Image.useBlankTile=false; 
 
+    var mapEventlisteners = false; // These will be turned on when page stops loading and map is ready
+    var show_log = true; // enable / disable the log
+    var open_page_at_start = false;
+    var markersZoomLimit = 8;  
+    var proj4326 = new OpenLayers.Projection("EPSG:4326");
+    var projmerc = new OpenLayers.Projection("EPSG:900913"); 
+
     // allow testing of specific renderers via "?renderer=Canvas", etc
     // use ist vor lat lon
     //var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
     //renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
 
     $(document).ready(function() {
+            // Initialize stuff when page has finished loading
+            // --------------------------------------------------
+            /*
+            * Debug log-box
+            */
+            // Some positioning...
+            log = $("#log").attr("style","position: absolute; top: 100px; left: 100px;");
+            log_list = $("#log ol");
+            //log.draggable({handle: ".handle", containment: "body"});
+            //$("#log").resizable({alsoResize: '#log ol'});
+
+            // Create a hide/show toggle button for the log window
+            $("#log .close, .toggle_log").click(function(e){
+                e.preventDefault();
+                log.toggle();
+            });
+
+            // Show or hide log at the start?
+            if(show_log==true) {
+                log.show();
+            } else {
+                log.hide();
+            }
+
+            // Log user's time
+            var date = new Date();
+            maps_debug("User's time "+date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()); 
+
+
+            // Initialize page content area
+            $("#pages .close").click(function(e){
+                    e.preventDefault();
+                    close_page();
+            });
+            if(open_page_at_start == false) {
+                $("#pages .page .content, #pages .page, #pages .close").hide();
+            } 
+
+            $("#toggleLog").click(function(e){
+                e.preventDefault();
+                log.toggle();
+            });
+
+
             // use this to reset a single form
             init();
             $("#test").click(function(event){
                 event.preventDefault();
                 //$(this).hide("slow");
-                $("#PointInfoPanel > #describtion").empty().append("new desc");
+								$("#PointInfoPanel > #describtion").empty().append("new desc");
+            });
+
+            $("#braunschweig").click(function(event){
+                event.preventDefault();
+                //$(this).hide("slow");
+                var lonLat = new OpenLayers.LonLat(10.5309, 52.2728).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+                map.setCenter (lonLat);
+
+                if(zoom==false) { map.zoomToMaxExtent(); }
+                else { map.zoomTo(13); }
             });
      });
 
@@ -92,6 +180,14 @@
             units: 'm',
             projection: new OpenLayers.Projection("EPSG:900913"),
             displayProjection: new OpenLayers.Projection("EPSG:4326"),
+
+            eventListeners: {
+                //"move": mapEventMoveStarted,
+                "moveend": mapEventMove,
+                //"zoomend": mapEventZoom,
+                //"changelayer": mapLayerChanged,
+                //"changebaselayer": mapBaseLayerChanged
+            }, 
 
             controls:[
                 new OpenLayers.Control.Navigation(),
@@ -186,6 +282,21 @@
         //layerCycleMap.setOpacity(0.4);
         map.addLayer(layerCycleMap);
 
+        var gphy = new OpenLayers.Layer.GoogleNG(
+            {type: google.maps.MapTypeId.TERRAIN}
+        );
+        var gmap = new OpenLayers.Layer.GoogleNG(
+            // ROADMAP, the default
+        );
+        var ghyb = new OpenLayers.Layer.GoogleNG(
+            {type: google.maps.MapTypeId.HYBRID}
+        );
+        var gsat = new OpenLayers.Layer.GoogleNG(
+            {type: google.maps.MapTypeId.SATELLITE}
+        );
+
+        map.addLayers([gphy, gmap, ghyb, gsat]);
+
         // This is the layer that uses the locally stored tiles
         //var newLayer = new OpenLayers.Layer.OSM("Local Tiles", "tiles/mapz${z}y${y}x${x}.png", {numZoomLevels: 19, alpha: true, isBaseLayer: false});
         //newLayer.setOpacity(0.5);
@@ -260,11 +371,55 @@
         //add an nice tool bar - don't work may cause I worte my own
         //map.addControl( new OpenLayers.Control.EditingToolbar(drawLayer));
 
+        // Initialize a layer for the hitchhiking places
+        // You can fill it with refreshMapMarkers() using listener events
+        hhplaces = new OpenLayers.Layer.Vector(
+            "HitchHiking Places", {/*
+            strategies: [
+                new OpenLayers.Strategy.Fixed(),
+                new OpenLayers.Strategy.Cluster()
+            ],*/
+            styleMap: new OpenLayers.StyleMap({
+                          "default": new OpenLayers.Style(
+                              {
+                    graphicZIndex: 1,
+                    pointRadius: 5,//"${radius}",
+                    strokeWidth: 2,
+                    cursor: "pointer",
+                    fillColor: "#000000",//#ffcc66
+                    strokeColor: "${getColor}" // using context.getColor(feature)
+                }
+                //{context: markerContext}
+                ),
+                "select": new OpenLayers.Style({
+                    graphicZIndex: 2,
+                    fillColor: "#66ccff",
+                    strokeColor: "#3399ff"
+                }),
+                "hover": new OpenLayers.Style({
+                    graphicZIndex: 2,
+                    fillColor: "#3399ff"
+                })
+            }), //stylemap end
+            isBaseLayer: false,
+                rendererOptions: {yOrdering: true}
+                }
+        );//hhplaces end 
+        map.addLayer(hhplaces);
+
+
         //position in map
         if( ! map.getCenter() ){
             var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-            map.setCenter (lonLat, zoom);
+            map.setCenter (lonLat);
         }
+
+        // Zoom
+        if(zoom==false) { map.zoomToMaxExtent(); }
+        else { map.zoomTo(zoom); }
+        // Let eventlisteners be free! :-)
+        // Meaning, they can be called from now on that page has stopped loading
+        mapEventlisteners = true; 
     }
 
     function onFeatureSelect(evt) {
@@ -281,6 +436,7 @@
         $("#PointInfoPanel > #lat").empty().append(lonlat.lat);
         $("#PointInfoPanel > #lon").empty().append(lonlat.lon);
         //$("#PointInfoPanel > #lat").empty().append("kein punkt");
+				$("#PointInfoPanel > #describtion").empty().append('<a href="http://www.openstreetmap.org/?mlat='+lonlat.lat+'&mlon='+lonlat.lon+'&zoom='+16+'&layers=M">osm link</a>');
     }
     function onFeatureUnselect(evt) {
         feature = evt.feature;
@@ -339,6 +495,100 @@
             }
         }
     }
+
+    /*
+    * Our own little markermanager
+    * Shows only what's needed, not all the world at the same time. ;-)
+    */
+    var markers = new Array();
+    function refreshMapMarkers() {
+        var currentZoom = map.getZoom();
+        map_center = map.getCenter();
+        // Hide markers layer if zoom level isn't deep enough, and show marker count-labels instead
+        if(currentZoom < markersZoomLimit) {
+            hhplaces.setVisibility(false);
+            //hhplaces_count.setVisibility(true);
+        }
+        else {
+            hhplaces.setVisibility(true);
+            //hhplaces_count.setVisibility(false);
+        }
+        // Start loading markers only after certain zoom level
+        if(currentZoom >= markersZoomLimit) {
+            // Get corner coordinates from the map
+            var extent = map.getExtent();
+            var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
+            var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
+            var apiCall = 'http://hitchwiki.org/maps/api/?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon;
+            maps_debug("Calling API: "+apiCall);
+            // Get markers from the API for this area
+            $.getJSON(apiCall, function(data) {
+                    // Go trough all markers
+                    maps_debug("Starting markers each-loop...");
+                    // Loop markers we got trough
+                    var markerStock = [];
+                    $.each(data, function(key, value) {
+                        /* Value includes:
+                           value.id;
+                           value.lat;
+                           value.lon;
+                           value.rating;
+                         */
+                        // Check if marker isn't already on the map
+                        // and add it to the map
+                        if(markers[value.id] != true) {
+                            markers[value.id] = true;
+                            //maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
+                            var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
+                            markerStock.push(
+                                new OpenLayers.Feature.Vector(
+                                    new OpenLayers.Geometry.Point(coords.lon, coords.lat),
+                                    {
+                                        id: value.id,
+                                        rating: value.rating
+                                    }
+                                )
+                            );
+                        //maps_debug("...done.");
+                        }
+                        else {
+                            //maps_debug("marker #"+value.id +" already on the map.");
+                        }
+                    // each * end
+                    });
+
+                    if(markerStock.length > 0) {
+                        maps_debug("Loop ended. Adding "+markerStock.length+" new markers to the map.");
+                        places.addFeatures(markerStock);
+                    } else {
+                        maps_debug("Loop ended. No new markers found from this area.");
+                    }
+                // getjson * end
+                });
+          // end zoom limit
+          }
+    }
+
+    /*
+    * Call when moving ends
+    */
+    function mapEventMove() {
+        if(mapEventlisteners==true) {
+            maps_debug("map movement ended");
+            // Refresh markers in viewport
+            refreshMapMarkers();
+        }
+    }
+
+    /*
+    * Log debug events
+    */
+    function maps_debug(str) {
+        log_list.append("<li><span>"+str+"</span></li>");
+        if(log.is(":visible")) log_list.attr({ scrollTop: $("#log ol").attr("scrollHeight") });
+    } 
+
+
     
    </script>
 </head>
@@ -370,6 +620,8 @@
 	 <a href="#" id="test">test</a> - 
    <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
    <label for="moveFeatures">move Feature</label>
+   - <a href="#" id="toggleLog">Show Log</a>
+   - <a href="#" id="braunschweig">goto bs</a>
    <div id="output">messung:
                </div>
    <div id="measuretools">
@@ -393,6 +645,14 @@
                 <label for="lineToggle">draw line</label>
                 <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleDrawControl(this);" />
                 <label for="polygonToggle">draw polygon</label>
+    </div>
+
+    <!-- for debugging -->
+    <div id="log" class="hidden">
+        <b class="handle">
+            Log <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
+        </b>
+        <ol><li>Hitchwiki Maps log started Sun, 14 Aug 2011 23:04:07 +0200</li></ol>
     </div>
 
 </body>
