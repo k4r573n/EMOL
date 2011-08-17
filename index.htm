@@ -150,12 +150,42 @@
             });
 
 
-            // use this to reset a single form
+            // init the map
             init();
             $("#test").click(function(event){
                 event.preventDefault();
+                $.ajax({
+                    url: "http://hitchwiki.org/maps/api/?bounds=52.211376856525,52.321894271889,10.093876875017,10.972783124983&who=k4",
+                    dateType: "jsonp",
+                    complete: 
+                        function(data,status) {
+                    alert("adf");
+                    }
+                  });
+
+            });
+            $("#flicker_test").click(function(event){
+                event.preventDefault();
+
+                //get fotos from flicker - maby to conventions
+                $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+                  {
+                    tags: "cat",
+                    tagmode: "any",
+                    format: "json"
+                  },
+                  function(data) {
+                    alert("adf");
+                  //  $.each(data.items, function(i,item){
+                  //    $("<img/>").attr("src", item.media.m).appendTo("#images");
+                  //    if ( i == 3 ) return false;
+                  //  });
+                  });
                 //$(this).hide("slow");
-								$("#PointInfoPanel > #describtion").empty().append("new desc");
+															
+								
+
+								$("#PointInfoPanel > #describtion").empty().append("new dtest");
             });
 
             $("#braunschweig").click(function(event){
@@ -519,7 +549,11 @@
             var extent = map.getExtent();
             var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
             var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
-            var apiCall = 'http://hitchwiki.org/maps/api/?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon;
+            var apiCall = 'http://hitchwiki.org/maps/api/?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
+              +'&format=json&who=k4'
+             // +'&lang=en_UK&download=test'
+              ;
+            //var apiCall = "./test.json";
             maps_debug("Calling API: "+apiCall);
             // Get markers from the API for this area
             $.getJSON(apiCall, function(data) {
@@ -538,7 +572,7 @@
                         // and add it to the map
                         if(markers[value.id] != true) {
                             markers[value.id] = true;
-                            //maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
+                            maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
                             var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
                             markerStock.push(
                                 new OpenLayers.Feature.Vector(
@@ -549,17 +583,17 @@
                                     }
                                 )
                             );
-                        //maps_debug("...done.");
+                        maps_debug("...done.");
                         }
                         else {
-                            //maps_debug("marker #"+value.id +" already on the map.");
+                            maps_debug("marker #"+value.id +" already on the map.");
                         }
                     // each * end
                     });
 
                     if(markerStock.length > 0) {
                         maps_debug("Loop ended. Adding "+markerStock.length+" new markers to the map.");
-                        places.addFeatures(markerStock);
+                        hhplaces.addFeatures(markerStock);
                     } else {
                         maps_debug("Loop ended. No new markers found from this area.");
                     }
@@ -573,6 +607,8 @@
     * Call when moving ends
     */
     function mapEventMove() {
+        $("#zoom").empty().append(map.getZoom());
+
         if(mapEventlisteners==true) {
             maps_debug("map movement ended");
             // Refresh markers in viewport
@@ -617,13 +653,14 @@
 
 	 </div>
 
+	 <a href="#" id="flicker_test">flicker </a> - 
 	 <a href="#" id="test">test</a> - 
    <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
    <label for="moveFeatures">move Feature</label>
    - <a href="#" id="toggleLog">Show Log</a>
    - <a href="#" id="braunschweig">goto bs</a>
    <div id="output">messung:
-               </div>
+   </div><div id="zoom" style="position: absolute; right: 10px;"></div>
    <div id="measuretools">
 
                 <input type="radio" name="type" value="none" id="noneToggle"
