@@ -13,8 +13,12 @@
    <!-- bring in the OpenStreetMap OpenLayers layers.
         Using this hosted file will make sure we are kept up
         to date with any necessary changes -->
-   <script src="OpenStreetMap.js"></script>
-   <script src="jquery-1.6.2.min.js"></script>
+   <script src="js/OpenStreetMap.js"></script>
+   <script src="js/jquery-1.6.2.min.js"></script>
+   <script src="js/jquery.scrollTo-min.js"></script>
+  <script src="js/jquery-ui-1.8.15.custom.min.js"></script>
+	<link type="text/css" href="css/smoothness/jquery-ui-1.8.15.custom.css" rel="stylesheet" />	
+	
 		<style>
 			a.test { font-weight: bold; }
 
@@ -68,7 +72,29 @@
           width: 450px;
       }
 
-			
+      #log .handle {
+          background: none repeat scroll 0 0 #004B61;
+          border-top-left-radius: 3px;
+          border-top-right-radius: 3px;
+          color: #FFFFFF;
+          cursor: move;
+          display: block;
+          height: 10px;
+          padding: 5px;
+      }
+
+      #log ol {
+          display: block;
+          height: 280px;
+          margin-right: 0;
+          max-height: 580px;
+          max-width: 680px;
+          overflow-x: hidden;
+          overflow-y: auto;
+          padding-right: 0;
+          width: 410px;
+      }
+
 		</style>
 
 <script type="text/javascript">
@@ -549,11 +575,13 @@
             var extent = map.getExtent();
             var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
             var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
-            var apiCall = 'http://hitchwiki.org/maps/api/?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
-              +'&format=json&who=k4'
+            //var apiCall = 'http://hitchwiki.org/maps/api/index.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
+            //  +'&format=json&who=k4'
              // +'&lang=en_UK&download=test'
-              ;
+             // ;
             //var apiCall = "./test.json";
+            var apiCall = 'http://127.0.0.1/blindMap/api.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon;
+
             maps_debug("Calling API: "+apiCall);
             // Get markers from the API for this area
             $.getJSON(apiCall, function(data) {
@@ -621,7 +649,8 @@
     */
     function maps_debug(str) {
         log_list.append("<li><span>"+str+"</span></li>");
-        if(log.is(":visible")) log_list.attr({ scrollTop: $("#log ol").attr("scrollHeight") });
+        //if(log.is(":visible")) log_list.attr({ scrollTop: $("#log ol").attr("scrollHeight") });
+        $("#log ol").scrollTo( '100%',0,{axis:'y'} );
     } 
 
 
@@ -685,7 +714,7 @@
     </div>
 
     <!-- for debugging -->
-    <div id="log" class="hidden">
+    <div id="log" class="hidden ui-draggable">
         <b class="handle">
             Log <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
         </b>
