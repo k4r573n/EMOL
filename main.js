@@ -587,7 +587,10 @@ function refreshMapMarkers_4() {
 
         maps_debug("Calling API... ");
         // Get markers from the API for this area
-        $.getJSON('http://127.0.0.1/blindMap/api_hitchmap.php?callback=?',
+        //$.getJSON('http://127.0.0.1/blindMap/api_hitchmap.php?callback=?', // lokal gehts eh
+        //$.getJSON('http://bastler.bplaced.de/api/api_hitchmap.php?callback=?', //file_get_contents geht nicht
+        //$.getJSON('http://api.net46.net/api_hitchmap.php?callback=?', //soll file_get_contents unterstüzen aber getJSON failed
+        $.getJSON('http://www.brgs.org/users/k.hinz/api/api_hitchmap.php?callback=?', //geht
             {
               bounds : corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
             },
@@ -639,146 +642,6 @@ function refreshMapMarkers_4() {
       );
       // end zoom limit
     }
-}
-/* new test with cross domain call support?! */
-function refreshMapMarkers_3() {
-    var currentZoom = map.getZoom();
-    map_center = map.getCenter();
-    // Hide markers layer if zoom level isn't deep enough, and show marker count-labels instead
-    if(currentZoom < markersZoomLimit) {
-        hhplaces.setVisibility(false);
-        //hhplaces_count.setVisibility(true);
-    }
-    else {
-        hhplaces.setVisibility(true);
-        //hhplaces_count.setVisibility(false);
-    }
-    // Start loading markers only after certain zoom level
-    if(currentZoom >= markersZoomLimit) {
-        // Get corner coordinates from the map
-        var extent = map.getExtent();
-        var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
-        var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
-        //var apiCall = 'http://hitchwiki.org/maps/api/index.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
-        //  +'&format=json&who=k4'
-         // +'&lang=en_UK&download=test'
-         // ;
-        //var apiCall = "./test.json";
-
-        maps_debug("Calling API... ");
-        // Get markers from the API for this area
-        $.ajax({
-            url: 'http://127.0.0.1/blindMap/api_hitchmap.php',
-            data: {bounds : corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon},
-            dataType: 'jsonp',
-            jsonp: 'callback',
-            jsonpCallback: 'jsonpCallback',
-//            jsonpCallback: function(data) {
-//          
-//                // Go trough all markers
-//                maps_debug("Starting markers each-loop...");
-//                // Loop markers we got trough
-//                var markerStock = [];
-//                $.each(data, function(key, value) {
-//                    /* Value includes:
-//                       value.id;
-//                       value.lat;
-//                       value.lon;
-//                       value.rating;
-//                     */
-//                    // Check if marker isn't already on the map
-//                    // and add it to the map
-//                    if(markers[value.id] != true) {
-//                        markers[value.id] = true;
-//                        maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
-//                        var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
-//                        markerStock.push(
-//                            new OpenLayers.Feature.Vector(
-//                                new OpenLayers.Geometry.Point(coords.lon, coords.lat),
-//                                {
-//                                    id: value.id,
-//                                    rating: value.rating
-//                                }
-//                            )
-//                        );
-//                    maps_debug("...done.");
-//                    }
-//                    else {
-//                        maps_debug("marker #"+value.id +" already on the map.");
-//                    }
-//                // each * end
-//                });
-//
-//                if(markerStock.length > 0) {
-//                    maps_debug("Loop ended. Adding "+markerStock.length+" new markers to the map.");
-//                    hhplaces.addFeatures(markerStock);
-//                } else {
-//                    maps_debug("Loop ended. No new markers found from this area.");
-//                }
-//            // getjson * end
-//                
-//            },
-            success: function(){
-              alert("success");
-            }
-      });
-      // end zoom limit
-    }
-}
-
-function jsonpCallback(data){
-      maps_debug(data.message);
-}
-
-/* test reflash with ol */
-function refreshMapMarkers_2() {
-    var currentZoom = map.getZoom();
-    map_center = map.getCenter();
-    // Hide markers layer if zoom level isn't deep enough, and show marker count-labels instead
-    if(currentZoom < markersZoomLimit) {
-        hhplaces.setVisibility(false);
-        //hhplaces_count.setVisibility(true);
-    }
-    else {
-        hhplaces.setVisibility(true);
-        //hhplaces_count.setVisibility(false);
-    }
-    // Start loading markers only after certain zoom level
-    if(currentZoom >= markersZoomLimit) {
-        // Get corner coordinates from the map
-        var extent = map.getExtent();
-        var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
-        var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
-        var apiCall = 'http://hitchwiki.org/maps/api/index.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
-          +'&format=json&who=k4'
-         // +'&lang=en_UK&download=test'
-          ;
-        //var apiCall = "./test.json";
-        //var apiCall = 'http://127.0.0.1/blindMap/api.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon;
-
-        //maps_debug("Calling API: "+apiCall);
-
-				// request details for popup
-				var handler = function(request)
-					{
-						var content = request.responseText;
-
-						maps_debug("api return: "+content);
-					}
-				requestApi(apiCall, "", handler);
-		}
-}
-
-// perform a synchron API request
-function requestApi(apiCall, query, handler)
-{
-        maps_debug("Calling API: "+apiCall);
-	if (typeof handler == 'undefined')
-		return OpenLayers.Request.GET({url: apiCall, async: false});
-		//return OpenLayers.Request.GET({url: root+'api/'+file+'.php?'+query, async: false});
-	else
-		return OpenLayers.Request.GET({url: apiCall, async: true, success: handler});
-		//return OpenLayers.Request.GET({url: root+'api/'+file+'.php?'+query, async: true, success: handler});
 }
 
 /*
