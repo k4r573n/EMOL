@@ -361,6 +361,24 @@ function init() {
     //add an nice tool bar - don't work may cause I worte my own
     //map.addControl( new OpenLayers.Control.EditingToolbar(drawLayer));
 
+		//for HitchHike overlay
+  // Different colors for markers depending on their rating
+    var colors = [    
+                    "#ffffff", // rate 0 (white)
+                    "#00ad00", // rate 1 (green)
+                    "#96ad00", // rate 2
+                    "#ffff00", // rate 3
+                    "#ff8d00", // rate 4
+                    "#ff0000"  // rate 5 (red)
+                ];
+    
+    // Get rating from marker
+    var markerContext = {
+        getColor: function(feature) {
+            return colors[feature.attributes["rating"]];
+        }
+    };
+
     // Initialize a layer for the hitchhiking places
     // You can fill it with refreshMapMarkers() using listener events
     hhplaces = new OpenLayers.Layer.Vector(
@@ -378,9 +396,7 @@ function init() {
                 cursor: "pointer",
                 fillColor: "#000000",//#ffcc66
                 strokeColor: "${getColor}" // using context.getColor(feature)
-            }
-            //{context: markerContext}
-            ),
+            }, {context: markerContext}),
             "select": new OpenLayers.Style({
                 graphicZIndex: 2,
                 fillColor: "#66ccff",
@@ -396,6 +412,45 @@ function init() {
             }
     );//hhplaces end 
     map.addLayer(hhplaces);
+
+		// Event listeners for places layer
+    hhplaces.events.on({
+        'featureselected': function(event) {
+            feature = event.feature;
+            maps_debug("Selected marker "+feature.attributes.id);
+            //showPlacePanel(feature.attributes.id);
+                
+        },
+        'featureunselected': function(feature) {
+            maps_debug("Unselected marker.");
+            //hidePlacePanel();
+        }
+    });
+
+		/*
+     * Hovering place markers
+     */
+    var hover_marker = new OpenLayers.Control.SelectFeature(hhplaces, {
+        hover: true,
+        highlightOnly: true,
+        renderIntent: "hover"
+    });
+    map.addControl(hover_marker);
+    hover_marker.activate();
+
+    /*
+     * Selecting markers
+     */
+    var select_marker = new OpenLayers.Control.SelectFeature(hhplaces, 
+                            {
+                                hover: false,
+                                highlightOnly: true,
+                                clickout: true,
+                                multiple: false,
+                                box: false
+                            });
+    map.addControl(select_marker);
+    select_marker.activate();
 
 
     //position in map
