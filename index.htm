@@ -141,15 +141,27 @@
 
    <!-- define a DIV into which the map will appear. Make it take up the whole window -->
    <div id="map" class="olMap" style="right : 250px;"></div>
+
+	 <div id="LocationPanel" class="InfoPanel" style="display: none;">
+		 <h3>Location Favourits</h3>
+		 <a href="#" id="loadLocations">load </a> - 
+		 <a href="#" id="saveLocation">save </a> - 
+		 lat: <div id="lat">0.00</div>
+		 lon: <div id="lon">0.00</div>
+		 describtion:
+		 <div id="describtion">desc</div>
+	 </div>
+
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: block;">
 		 <h3>Info Point</h3>goto
+		 <a href="#" class="goto">goto </a>
 		 lat: <div id="lat">0.00</div>
 		 lon: <div id="lon">0.00</div>
 		 describtion:
 		 <div id="describtion">desc</div>
 		 <div id="creation_date">date</div>
-
 	 </div>
+
 	 <div id="LineInfoPanel" class="InfoPanel" style="display: none;">
 		 <h3>Info Line</h3>goto
 		 length: <div id="lineLength">0</div>m
@@ -157,7 +169,6 @@
 		 describtion:
 		 <div id="describtion">desc</div>
 		 <div id="creation_date">date</div>
-
 	 </div>
 
 	 <a href="#" id="flicker_test">flicker </a> - 
@@ -202,7 +213,7 @@
         <b class="handle">
             Log <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
         </b>
-        <ol><li>Hitchwiki Maps log started Sun, 14 Aug 2011 23:04:07 +0200</li></ol>
+        <ol><li>Testing Maps log started Sun, 14 Aug 2011 23:04:07 +0200</li></ol>
     </div>
 
 </body>

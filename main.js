@@ -91,20 +91,27 @@ $(document).ready(function() {
 
         // init the map
         init();
+        $(".goto").click(function(event){
+            event.preventDefault();
+            var lat = $(".goto").parent().$("#lat");
+            var lon = $(".goto").parent().$("#lon");
+            var target = new OpenLayers.LonLat(lat, lon).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+            map.setCenter (target);
+
+            alert("lat:"+lat+" lon:"+lon);
+        });
+
+        //function call - to test code
         $("#test").click(function(event){
             event.preventDefault();
-
-            $.ajax({
-                url: "http://hitchwiki.org/maps/api/?bounds=52.211376856525,52.321894271889,10.093876875017,10.972783124983&who=k4",
-                dateType: "jsonp",
-                crossDomain: true,
-                complete: 
-                    function(data,status) {
-                alert("adf");
-                }
-              });
-
+            alert("adf");
+            //sollte das info panel zeigen
+            $(".InfoPanel").hide();
+            $("#LocationPanel").show();
+            alert("adf");
         });
+
+        //example usage of the flicker api
         $("#flicker_test").click(function(event){
             event.preventDefault();
 
@@ -123,13 +130,10 @@ $(document).ready(function() {
               //  });
               });
             //$(this).hide("slow");
-                          
-            
-
             $("#PointInfoPanel > #describtion").empty().append("new dtest");
         });
 
-        $(function() {
+        //$(function() {
             $( "#toggleLog" ).button(
             {
               icons: {primary: "ui-icon-custom"},
@@ -144,18 +148,13 @@ $(document).ready(function() {
               text: false
             });
             $( "#format" ).buttonset();
-        });
+        //});
 
-
-
+        //move map to Braunschweig
         $("#braunschweig").click(function(event){
             event.preventDefault();
             //$(this).hide("slow");
-            var lonLat = new OpenLayers.LonLat(10.5309, 52.2728).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-            map.setCenter (lonLat);
-
-            if(zoom==false) { map.zoomToMaxExtent(); }
-            else { map.zoomTo(13); }
+            gotoTarget(10.5309, 52.2728);
         });
  });
 
@@ -699,6 +698,84 @@ function refreshMapMarkers_4() {
     }
 }
 
+/**
+ * requests api for locations to show them on locationPanel
+ *
+ * TODO: completion
+ */
+function getLocations() {
+    maps_debug("Calling location API (load)... ");
+
+    $.getJSON('http://127.0.0.1/api/api_locations.php?callback=?', //is running :)
+        {
+          getLocations: 1
+        },
+			function(data) {
+
+				// Go trough all markers
+				maps_debug("Starting locations each-loop...");
+				// Loop markers we got trough
+				var locStock = [];
+				$.each(data, function(key, value) {
+					/* Value includes:
+						 value.id;
+						 value.lat;
+						 value.lon;
+						 value.zoom;
+             ...
+						 */
+          maps_debug(""+value.name+' ('+value.lat+', '+value.lon+') zoom:'+value.zoom);
+				});
+			});
+}
+
+//TODO fix die klasse
+//Location = class{
+//  var id,lat,lon,zoom,north,south,east,west,name,desc,
+//  CLASS_NAME="Location";
+//}
+
+/**
+ * give the current location to api to store
+ *
+ * TODO: completion
+ */
+function storeLocation() {
+    maps_debug("Calling location API (store)... ");
+    var loc = new Location();
+
+    var extent = map.getExtent();
+    var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
+    var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
+
+    var date = new Date();
+    maps_debug("timestamp:"+date.getTimestamp());
+    loc.id = "42"; //TODO timestamp + random
+    loc.lat = (corner1.lat + corner2.lat) / 2;
+    loc.lon = (corner1.lon + corner2.lon) / 2;
+
+    loc.zoom = map.getZoom();
+
+    loc.north = corner1.lon;
+    loc.south = corner2.lon;
+    loc.west = corner1.lat;
+    loc.east = corner2.lat;
+    loc.name = "test1";//TODO read from textfield
+    loc.desc = "ein test";//TODO read from textfield
+
+    $.getJSON('http://127.0.0.1/api/api_locations.php?callback=?', //is running :)
+        {
+          edit: $.toJSON(loc)
+        },
+			function(data) {
+        
+				// Go trough all markers
+				maps_debug("save locations return value: "+data);
+				// Loop markers we got trough
+
+			});
+}
+
 /*
 * Call when moving ends
 */
@@ -721,3 +798,11 @@ function maps_debug(str) {
     //if(log.is(":visible")) log_list.attr({ scrollTop: $("#log ol").attr("scrollHeight") });
     $("#log ol").scrollTo( '100%',0,{axis:'y'} );
 } 
+
+function gotoTarget(lon,lat) {
+    var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+    map.setCenter (lonLat);
+
+    if(zoom==false) { map.zoomToMaxExtent(); }
+    else { map.zoomTo(13); }
+}
