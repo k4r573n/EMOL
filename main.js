@@ -101,14 +101,29 @@ $(document).ready(function() {
             alert("lat:"+lat+" lon:"+lon);
         });
 
+				//get Locations
+        $("#loadLocations").click(function(event){
+            event.preventDefault();
+            //sollte das info panel zeigen
+						maps_debug("load Location...");
+						getLocations();
+        });
+
+				//save Location
+        $("#saveLocation").click(function(event){
+            event.preventDefault();
+            //sollte das info panel zeigen
+						maps_debug("save Location...");
+						storeLocation();
+        });
+
         //function call - to test code
         $("#test").click(function(event){
             event.preventDefault();
-            alert("adf");
             //sollte das info panel zeigen
+						maps_debug("show LocationPanel");
             $(".InfoPanel").hide();
             $("#LocationPanel").show();
-            alert("adf");
         });
 
         //example usage of the flicker api
@@ -729,11 +744,6 @@ function getLocations() {
 			});
 }
 
-//TODO fix die klasse
-//Location = class{
-//  var id,lat,lon,zoom,north,south,east,west,name,desc,
-//  CLASS_NAME="Location";
-//}
 
 /**
  * give the current location to api to store
@@ -742,14 +752,28 @@ function getLocations() {
  */
 function storeLocation() {
     maps_debug("Calling location API (store)... ");
-    var loc = new Location();
+
+		//TODO fix die klasse
+		var loc = {
+			id : "",
+			lat : "0",
+			lon : "0",
+			zoom : "1",
+			north : "90",
+			south : "-90",
+			east : "180",
+			west : "-180",
+			name : "",
+			desc : ""
+			//CLASS_NAMIE="Location"
+		}
 
     var extent = map.getExtent();
     var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
     var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
 
     var date = new Date();
-    maps_debug("timestamp:"+date.getTimestamp());
+    maps_debug("timestamp:"+date.getTime());
     loc.id = "42"; //TODO timestamp + random
     loc.lat = (corner1.lat + corner2.lat) / 2;
     loc.lon = (corner1.lon + corner2.lon) / 2;
