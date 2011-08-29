@@ -651,6 +651,9 @@ function refreshMapMarkers() {
         // Get markers from the API for this area
         //$.getJSON('http://127.0.0.1/blindMap/api_hitchmap.php?callback=?', // lokal gehts eh
         //$.getJSON('http://www.brgs.org/users/k.hinz/api/api_hitchmap.php?callback=?', //geht
+				/*
+				 * BUG error messages are not JSONP encoded - this means that the function is not called if there are no results
+				 */
         $.getJSON('http://hitchwiki.org/maps/api/?callback=?', //geht
             {
               bounds : corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon,
@@ -658,40 +661,45 @@ function refreshMapMarkers() {
 							lang: "de_DE"
             },
             function(data) {
+								maps_debug("parse data...");
           
-                // Go trough all markers
-                maps_debug("Starting markers each-loop...");
                 // Loop markers we got trough
-                var markerStock = [];
-                $.each(data, function(key, value) {
-                    /* Value includes:
-                       value.id;
-                       value.lat;
-                       value.lon;
-                       value.rating;
-                     */
-                    // Check if marker isn't already on the map
-                    // and add it to the map
-                    if(markers[value.id] != true) {
-                        markers[value.id] = true;
-                        maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
-                        var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
-                        markerStock.push(
-                            new OpenLayers.Feature.Vector(
-                                new OpenLayers.Geometry.Point(coords.lon, coords.lat),
-                                {
-                                    id: value.id,
-                                    rating: value.rating
-                                }
-                            )
-                        );
-                    maps_debug("...done.");
-                    }
-                    else {
-                        maps_debug("marker #"+value.id +" already on the map.");
-                    }
-                // each * end
-                });
+								if(data.error != undefined)
+									maps_debug("error while loading hitchPlaces");
+								else{
+									// Go trough all markers
+									maps_debug("Starting markers each-loop...");
+									var markerStock = [];
+									$.each(data, function(key, value) {
+										/* Value includes:
+											 value.id;
+											 value.lat;
+											 value.lon;
+											 value.rating;
+											 */
+										// Check if marker isn't already on the map
+										// and add it to the map
+										if(markers[value.id] != true) {
+											markers[value.id] = true;
+											maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
+											var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
+											markerStock.push(
+												new OpenLayers.Feature.Vector(
+													new OpenLayers.Geometry.Point(coords.lon, coords.lat),
+													{
+														id: value.id,
+														rating: value.rating
+													}
+													)
+												);
+											maps_debug("...done.");
+										}
+										else {
+											maps_debug("marker #"+value.id +" already on the map.");
+										}
+										// each * end
+									}).error(function() {maps_debug("error undifined");});
+								}
 
                 if(markerStock.length > 0) {
                     maps_debug("Loop ended. Adding "+markerStock.length+" new markers to the map.");
@@ -816,11 +824,11 @@ function addLocation(mapLocation)
 	 */
 	maps_debug("add Loc:"+mapLocation.name+"-"+mapLocation.desc);
 	$("#locationList").append('<li class="ui-widget-content"><div><h3>'+mapLocation.name+
+			'<img src="img/loc_icons/sb.png" class="align_right"/>'+
 			'</h3><div class="locDescribtion">'+mapLocation.desc+'</div>'+
 			'<div id="lon" style="display:none;">'+mapLocation.lon+'</div>'+
 			'<div id="lat" style="display:none;">'+mapLocation.lat+'</div>'+
 			'<div id="zoom" style="display:none;">'+mapLocation.zoom+'</div>'+
-			
 			'</div></li>');
 				
 }
@@ -855,12 +863,12 @@ function maps_debug(str) {
     $("#log ol").scrollTo( '100%',0,{axis:'y'} );
 } 
 
-function gotoTarget(lon,lat) {
+function zoomMapIn(lon,lat, zoom) {
     var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
     map.setCenter (lonLat);
 
     if(zoom==false) { map.zoomToMaxExtent(); }
-    else { map.zoomTo(13); }
+    else { map.zoomTo(zoom); }
 }
 
 /*
@@ -869,57 +877,54 @@ function gotoTarget(lon,lat) {
 */
 function search(q) {
     maps_debug("Search: "+q);
-    stats("search/?s="+q);
-    show_loading_bar(_("Searching..."));
+    //stats("search/?s="+q);
+    //show_loading_bar(_("Searching..."));
     // Geocode
-    //$.getJSON('ajax/geocoder.php?q=' + q, function(data) {
-    $.ajax({
-        // Define AJAX properties.
-        method: "get",
-        url: 'ajax/geocoder.php?q=' + q,
-			  //url: 'http://nominatim.openstreetmap.org/search?format=json&q=' + q,
-        dataType: "json",
-        timeout: 10000, // timeout in milliseconds; 1s = 1000ms
-        // Got a place
-        success: function(data){
+    $.getJSON('http://nominatim.openstreetmap.org/search?json_callback=?',
+				{
+					format: "json", 
+					limit: "1", 
+					q: q
+				},
+				function(data) {//success
             // Hide "searching"
-            hide_loading_bar();
-            maps_debug("Search results came from: "+data.service+"<br /> - Locality: "+data.locality+"<br /> - Country: "+data.country_code);
+            //hide_loading_bar();
+						data = data[0];
+            maps_debug("Search results came from: "+data.licence+"<br /> - text: "+data.display_name+"<br /> - Type: "+data.type);
             // If we got a bounding box as an answr, use it:
-            if(data.boundingbox != undefined) {
-                //maps_debug("Search found: lat: "+data.lat+", lon: "+data.lon);
-                maps_debug("Moving to the bounding box: "+data.boundingbox);
-                // build a bounding box coordinates and zoom in
-                var boundingbox = data.boundingbox.split(',');
-                bounds = new OpenLayers.Bounds();
-                bounds.extend( new OpenLayers.LonLat(boundingbox[2],boundingbox[0]) );
-                bounds.extend( new OpenLayers.LonLat(boundingbox[3],boundingbox[1]) );
-                map.zoomToExtent( bounds );
-            }
-            else if(data.lat != undefined && data.lon != undefined) {
+//            if(data.boundingbox != undefined) {
+//                //maps_debug("Search found: lat: "+data.lat+", lon: "+data.lon);
+//                maps_debug("Moving to the bounding box: "+data.boundingbox +data.boundingbox[0]);
+//                // build a bounding box coordinates and zoom in
+//                var boundingbox = data.boundingbox;//.split(',');
+//                bounds = new OpenLayers.Bounds();
+//                bounds.extend( new OpenLayers.LonLat(boundingbox[2],boundingbox[0]) );
+//                bounds.extend( new OpenLayers.LonLat(boundingbox[3],boundingbox[1]) );
+//                map.zoomToExtent( bounds );
+//            }
+            //else
+							if(data.lat != undefined && data.lon != undefined) {
                 maps_debug("Moving to lat+lon.");
-                if(data.zoom == undefined) searchZoom = 5;
+                if(data.zoom == undefined) searchZoom = 14;
                 else searchZoom = data.zoom;
-                zoomMapIn(data.lat, data.lon, searchZoom);
+                zoomMapIn(data.lon, data.lat, searchZoom);
             }
             // We got a result, but nada...
             else {
                 maps_debug("Search didn't find anything.");
-                info_dialog('<p>'+_("Your search did not match any places.")+'</p><p>'+_("Try searching in English and add a country name in to your search.")+'</p><p>'+_("Example:")+' Vilnius, Lithuania.</p>', _('Not found'), false);
+                //info_dialog('<p>'+_("Your search did not match any places.")+'</p><p>'+_("Try searching in English and add a country name in to your search.")+'</p><p>'+_("Example:")+' Vilnius, Lithuania.</p>', _('Not found'), false);
             }
-        },
+        })
         // Didn't find anything...
-        error: function( objAJAXRequest, strError ){
+        .error(function(){
                    maps_debug("Search didn't find anything. Error type: "+strError);
-                   // Hide "searching"
-                   hide_loading_bar();
+                   // Hide "searching"}
+                   //hide_loading_bar();
                    info_dialog('<p>'+_("Your search did not match any places.")+'</p><p>'+_("Try searching by english city names or/and add a country name with cities."), _('Not found'), false);
-               }
-    });
-    //});
+               });
     // Close open stuff
-    close_cards();
-    close_page();
+    //close_cards();
+    //close_page();
     return false;
 }
 
