@@ -194,7 +194,7 @@ $(document).ready(function() {
         $("#braunschweig").click(function(event){
             event.preventDefault();
             //$(this).hide("slow");
-            gotoTarget(10.5309, 52.2728);
+            zoomMapIn(10.5309, 52.2728,13);
         });
 
         // Search form (from HH)
@@ -698,7 +698,7 @@ function refreshMapMarkers() {
 											maps_debug("marker #"+value.id +" already on the map.");
 										}
 										// each * end
-									}).error(function() {maps_debug("error undifined");});
+									});
 								}
 
                 if(markerStock.length > 0) {
@@ -710,7 +710,7 @@ function refreshMapMarkers() {
             // getjson * end
                 
             }
-      );
+      ).error(function() {maps_debug("error undifined"); });
       // end zoom limit
     }
 }
