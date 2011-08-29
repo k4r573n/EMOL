@@ -16,6 +16,7 @@
    <script src="js/OpenStreetMap.js"></script>
    <script src="js/jquery-1.6.2.min.js"></script>
    <script src="js/jquery.scrollTo-min.js"></script>
+	 <script src="js/jquery.json-2.2.min.js"></script>
   <script src="js/jquery-ui-1.8.15.custom.min.js"></script>
   <script type="text/javascript" src="main.js"></script>
 	<link type="text/css" href="css/smoothness/jquery-ui-1.8.15.custom.css" rel="stylesheet" />	
@@ -55,6 +56,7 @@
 					border-left: 1px solid #CCC4A0;
 					bottom: 25px;
 					display: block;
+					overflow-y: auto;
 					/* overflow-x: hidden; */
 					/* padding: 0; */
 					position: absolute;
@@ -131,6 +133,71 @@
           float: right;
       }
 
+			#locationList .ui-selecting { background: #FECA40; }
+			#locationList .ui-selected { background: #F39814; color: white; }
+			#locationList {
+					list-style-type: none;
+					margin: 0;
+					padding: 0;
+					width: 100%;
+			}
+			#locationList li {
+          border-radius: 10px 10px 10px 10px;
+          /*border-color: #C9AB22 #C9AB22 transparent;*/
+					margin: 4px 10px 4px 10px;
+					padding: 4px;
+					font-size: 13px;
+					line-height: 8px;
+					/*h3 {font-size: 0.5em; }*/
+					/*height: 18px; */
+					/*width: 100%;*/
+			}
+			#locationList li {
+					/*margin: 5px 10px 5px 10px;*/
+					margin-top: 0px;
+      }
+          
+      #search #q {
+        background: none repeat scroll 0 0 transparent;
+        border: 0 none;
+        display: block;
+        float: left;
+        font-size: 13px;
+        height: 20px;
+        line-height: 20px;
+        margin: 0 0 0 3px;
+        padding: 0;
+        width: 170px;
+      }
+
+      #search_form {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border-radius: 10px 10px 10px 10px;
+        box-shadow: 1px 1px 4px #DBB42A;
+        clear: both;
+        display: block;
+        height: 20px;
+        margin: 0 0 5px;
+        padding: 3px;
+        width: 200px;
+      }
+
+      .search_submit {
+        background: none repeat scroll 0 0 transparent;
+        border: 0 none;
+        display: block;
+        float: right;
+        font-size: 13px;
+        height: 20px;
+        line-height: 13px;
+        margin: 0;
+        padding: 0;
+        width: 20px;
+      }
+
+      .hidden {display:none;}
+
+
 
 		</style>
 
@@ -145,11 +212,18 @@
 	 <div id="LocationPanel" class="InfoPanel" style="display: none;">
 		 <h3>Location Favourits</h3>
 		 <a href="#" id="loadLocations">load </a> - 
-		 <a href="#" id="saveLocation">save </a> - 
-		 lat: <div id="lat">0.00</div>
-		 lon: <div id="lon">0.00</div>
-		 describtion:
-		 <div id="describtion">desc</div>
+		 <div border="1px" style="margin: 10px;">
+			 Name:<br>
+			 <input id="name" type="text" style="width : 100%"/><br>
+			 Describtion:<br>
+			 <input id="desc" type="text" style="width : 100%"/><br>
+			 <br>
+			 <a href="#" id="saveLocation">save </a> - 
+			 <hr>
+		 </div>
+		 <ol id="locationList">
+			 <!--<li class="ui-widget-content">Item 1</li>-->
+		 </ol>
 	 </div>
 
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: block;">
@@ -171,14 +245,45 @@
 		 <div id="creation_date">date</div>
 	 </div>
 
-	 <a href="#" id="flicker_test">flicker </a> - 
-	 <a href="#" id="test">test</a> - 
-   <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
-   <label for="moveFeatures">move Feature</label>
-   - <a href="#" id="braunschweig">goto bs</a>
-	 <input type="checkbox" id="toggleLog" class="toggle_log"/><label for="toggleLog">show log</label>
-	 <input type="checkbox" id="toggleMeasure" class="toggle_tools" /><label for="toggleMeasure">measure</label>
-   <div id="zoom" style="position: absolute; right: 10px;"></div>
+	 <div id="header" style="position: absolute; top:0px;right: 0px; left:0px; border-size: 2px; height:70px; margin: 10px 10px 10px 10px; /*background-color: #eebb33;*/">
+    <div id="search" class="align_right">
+      <form method="get" action="#" id="search_form" name="search" role="search">
+      <div class="ui-widget">
+        <input type="text" value="" id="q" name="q" />
+        <button type="submit" class="search_submit button" title="Search">
+          <span class="icon magnifier">&nbsp;</span>
+          <span class="hidden">Search</span>
+        </button>
+        <div class="clear"></div>
+      </div>
+      </form>
+    </div>
+
+		 <a href="#" id="flicker_test">flicker </a> - 
+		 <a href="#" id="test">test</a> - 
+		 <a href="#" id="showLocationPanel">Locations</a> - 
+		 <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
+		 <label for="moveFeatures">move Feature</label>
+		 - <a href="#" id="braunschweig">goto bs</a>
+		 <input type="checkbox" id="toggleLog" class="toggle_log"/><label for="toggleLog">show log</label>
+		 <input type="checkbox" id="toggleMeasure" class="toggle_tools" /><label for="toggleMeasure">measure</label>
+		 <div id="zoom" style="position: absolute; right: 10px;"></div>
+
+    <div id="drawing_tools">
+                <input type="radio" name="type" value="none" id="noneDrawToggle"
+                       onclick="toggleDrawControl(this);" checked="checked" />
+                <label for="noneDrawToggle">navigate</label>
+                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleDrawControl(this);" />
+                <label for="pointToggle">draw point</label>
+                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleDrawControl(this);" />
+                <label for="lineToggle">draw line</label>
+                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleDrawControl(this);" />
+                <label for="polygonToggle">draw polygon</label>
+    </div>
+
+	 </div>
+
+
 
    <div id="measureTools" class="floatingPanel draggable hidden ui-draggable" style="display: none;">
         <b class="handle">
@@ -195,17 +300,6 @@
                 <label for="polygonToggle">measure area</label>
 
         <div id="output">messung:</div>
-    </div>
-    <div id="drawing_tools">
-                <input type="radio" name="type" value="none" id="noneDrawToggle"
-                       onclick="toggleDrawControl(this);" checked="checked" />
-                <label for="noneDrawToggle">navigate</label>
-                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleDrawControl(this);" />
-                <label for="pointToggle">draw point</label>
-                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleDrawControl(this);" />
-                <label for="lineToggle">draw line</label>
-                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleDrawControl(this);" />
-                <label for="polygonToggle">draw polygon</label>
     </div>
 
     <!-- for debugging -->

@@ -120,11 +120,36 @@ $(document).ready(function() {
         //function call - to test code
         $("#test").click(function(event){
             event.preventDefault();
+						maps_debug("test");
+						addLocation({"name":"test","desc":"eine beschreibung","lat":0,"lon":0, "zoom":10});
+						//addLocation("tttt");
+
+        });
+
+				//shows the location List
+				$("#showLocationPanel").click(function(event){
+            event.preventDefault();
             //sollte das info panel zeigen
 						maps_debug("show LocationPanel");
             $(".InfoPanel").hide();
             $("#LocationPanel").show();
         });
+				
+				//make location list selectalbe 
+				$( "#locationList" ).selectable({
+					stop: function() {
+						//var result = $( "#select-result" ).empty();
+						$( ".ui-selected", this ).each(function() {
+							var index = $( "#locationList li" ).index( this );
+							//result.append( " #" + ( index + 1 ) );
+							maps_debug("select "+index);
+							maps_debug("lat:"+$(this).find("#lat").text());// +" lon:"+$("#lon", this) +" zoom:"+$("#zoom", this) );
+							var lonLat = new OpenLayers.LonLat($(this).find("#lon").text(), $(this).find("#lat").text()).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+							map.setCenter (lonLat);
+							map.zoomTo($(this).find("#zoom").text());
+						});
+					}
+				});
 
         //example usage of the flicker api
         $("#flicker_test").click(function(event){
@@ -171,6 +196,48 @@ $(document).ready(function() {
             //$(this).hide("slow");
             gotoTarget(10.5309, 52.2728);
         });
+
+        // Search form (from HH)
+        $("#search_form").submit(function(){
+          search($("#search_form input#q").val());
+          return false;
+        });
+
+        // Autosuggest in search (from HH)
+        $("#search_form input#q").autocomplete({
+          source: function(request, response) {
+                    $.ajax({
+                      url: "http://ws.geonames.org/searchJSON",
+                      dataType: "jsonp",
+                      data: {
+                        featureClass: "P",
+                      style: "full",
+                      maxRows: 10,
+                      name_startsWith: request.term
+                      },
+                      success: function(data) {
+                                 response($.map(data.geonames, function(item) {
+                                   return {
+                                     label: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName,
+                                 value: item.name + (item.adminName1 ? ", " + item.adminName1 : "") + ", " + item.countryName
+                                   //value: item.name + ", " + item.countryName
+                                   }
+                                 }))
+                               }
+                    })
+                  },
+            minLength: 2,
+            select: function(event, ui) {
+              search(ui.item.label);
+            },
+            open: function() {
+                    $(this).removeClass("ui-corner-all").addClass("ui-corner-top");
+                  },
+            close: function() {
+                     $(this).removeClass("ui-corner-top").addClass("ui-corner-all");
+                   }
+        });
+        
  });
 
 //Initialise the 'map' object
@@ -560,82 +627,8 @@ function toggleMeasureControl(element) {
 * Shows only what's needed, not all the world at the same time. ;-)
 */
 var markers = new Array();
-function refreshMapMarkers() {
-    var currentZoom = map.getZoom();
-    map_center = map.getCenter();
-    // Hide markers layer if zoom level isn't deep enough, and show marker count-labels instead
-    if(currentZoom < markersZoomLimit) {
-        hhplaces.setVisibility(false);
-        //hhplaces_count.setVisibility(true);
-    }
-    else {
-        hhplaces.setVisibility(true);
-        //hhplaces_count.setVisibility(false);
-    }
-    // Start loading markers only after certain zoom level
-    if(currentZoom >= markersZoomLimit) {
-        // Get corner coordinates from the map
-        var extent = map.getExtent();
-        var corner1 = new OpenLayers.LonLat(extent.left, extent.top).transform(projmerc, proj4326);
-        var corner2 = new OpenLayers.LonLat(extent.right, extent.bottom).transform(projmerc, proj4326);
-        //var apiCall = 'http://hitchwiki.org/maps/api/index.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
-        //  +'&format=json&who=k4'
-         // +'&lang=en_UK&download=test'
-         // ;
-        //var apiCall = "./test.json";
-        var apiCall = 'http://127.0.0.1/blindMap/api_hitchmap.php?bounds='+corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon;
-
-        maps_debug("Calling API: "+apiCall);
-        // Get markers from the API for this area
-        $.getJSON(apiCall, function(data) {
-                // Go trough all markers
-                maps_debug("Starting markers each-loop...");
-                // Loop markers we got trough
-                var markerStock = [];
-                $.each(data, function(key, value) {
-                    /* Value includes:
-                       value.id;
-                       value.lat;
-                       value.lon;
-                       value.rating;
-                     */
-                    // Check if marker isn't already on the map
-                    // and add it to the map
-                    if(markers[value.id] != true) {
-                        markers[value.id] = true;
-                        maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
-                        var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
-                        markerStock.push(
-                            new OpenLayers.Feature.Vector(
-                                new OpenLayers.Geometry.Point(coords.lon, coords.lat),
-                                {
-                                    id: value.id,
-                                    rating: value.rating
-                                }
-                            )
-                        );
-                    maps_debug("...done.");
-                    }
-                    else {
-                        maps_debug("marker #"+value.id +" already on the map.");
-                    }
-                // each * end
-                });
-
-                if(markerStock.length > 0) {
-                    maps_debug("Loop ended. Adding "+markerStock.length+" new markers to the map.");
-                    hhplaces.addFeatures(markerStock);
-                } else {
-                    maps_debug("Loop ended. No new markers found from this area.");
-                }
-            // getjson * end
-            });
-      // end zoom limit
-      }
-}
-
 /* new new test with cross domain call support?! */
-function refreshMapMarkers_4() {
+function refreshMapMarkers() {
     var currentZoom = map.getZoom();
     map_center = map.getCenter();
     // Hide markers layer if zoom level isn't deep enough, and show marker count-labels instead
@@ -657,11 +650,12 @@ function refreshMapMarkers_4() {
         maps_debug("Calling API... ");
         // Get markers from the API for this area
         //$.getJSON('http://127.0.0.1/blindMap/api_hitchmap.php?callback=?', // lokal gehts eh
-        //$.getJSON('http://bastler.bplaced.de/api/api_hitchmap.php?callback=?', //file_get_contents geht nicht
-        //$.getJSON('http://api.net46.net/api_hitchmap.php?callback=?', //soll file_get_contents unterstüzen aber getJSON failed
-        $.getJSON('http://www.brgs.org/users/k.hinz/api/api_hitchmap.php?callback=?', //geht
+        //$.getJSON('http://www.brgs.org/users/k.hinz/api/api_hitchmap.php?callback=?', //geht
+        $.getJSON('http://hitchwiki.org/maps/api/?callback=?', //geht
             {
-              bounds : corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon
+              bounds : corner2.lat+','+corner1.lat+','+corner1.lon+','+corner2.lon,
+							who: "k4",
+							lang: "de_DE"
             },
             function(data) {
           
@@ -729,6 +723,8 @@ function getLocations() {
 
 				// Go trough all markers
 				maps_debug("Starting locations each-loop...");
+				//empty location list
+				$("#locationList").empty();
 				// Loop markers we got trough
 				var locStock = [];
 				$.each(data, function(key, value) {
@@ -737,9 +733,12 @@ function getLocations() {
 						 value.lat;
 						 value.lon;
 						 value.zoom;
+						 value.name;
+						 value.desc;
              ...
 						 */
-          maps_debug(""+value.name+' ('+value.lat+', '+value.lon+') zoom:'+value.zoom);
+          //maps_debug(""+value.name+' ('+value.lat+', '+value.lon+') zoom:'+value.zoom);
+					addLocation(value);
 				});
 			});
 }
@@ -774,7 +773,7 @@ function storeLocation() {
 
     var date = new Date();
     maps_debug("timestamp:"+date.getTime());
-    loc.id = "42"; //TODO timestamp + random
+    loc.id = date.getTime(); //TODO timestamp + random
     loc.lat = (corner1.lat + corner2.lat) / 2;
     loc.lon = (corner1.lon + corner2.lon) / 2;
 
@@ -784,8 +783,8 @@ function storeLocation() {
     loc.south = corner2.lon;
     loc.west = corner1.lat;
     loc.east = corner2.lat;
-    loc.name = "test1";//TODO read from textfield
-    loc.desc = "ein test";//TODO read from textfield
+    loc.name = $("#LocationPanel > div > #name").val();
+    loc.desc = $("#LocationPanel > div > #desc").val();
 
     $.getJSON('http://127.0.0.1/api/api_locations.php?callback=?', //is running :)
         {
@@ -798,6 +797,40 @@ function storeLocation() {
 				// Loop markers we got trough
 
 			});
+    $("#LocationPanel > div > #name").val("");
+    $("#LocationPanel > div > #desc").val("");
+}
+
+/*
+ * adds an entry to the location list
+ * just for experimenting
+ */
+function addLocation(mapLocation)
+{
+	/* values are
+	 * mapLocation.name,
+	 * mapLocation.desc,
+	 * mapLocation.lon,
+	 * mapLocation.lat,
+	 * mapLocation.zoom
+	 */
+	maps_debug("add Loc:"+mapLocation.name+"-"+mapLocation.desc);
+	$("#locationList").append('<li class="ui-widget-content"><div><h3>'+mapLocation.name+
+			'</h3><div class="locDescribtion">'+mapLocation.desc+'</div>'+
+			'<div id="lon" style="display:none;">'+mapLocation.lon+'</div>'+
+			'<div id="lat" style="display:none;">'+mapLocation.lat+'</div>'+
+			'<div id="zoom" style="display:none;">'+mapLocation.zoom+'</div>'+
+			
+			'</div></li>');
+				
+}
+/**
+ * loads the whole list of locations and shows them
+ */
+function loadLocationList(data)
+{
+	alert("TODO");
+
 }
 
 /*
@@ -809,8 +842,7 @@ function mapEventMove() {
     if(mapEventlisteners==true) {
         maps_debug("map movement ended");
         // Refresh markers in viewport
-        refreshMapMarkers_4();
-        //refreshMapMarkers();
+        refreshMapMarkers();
     }
 }
 
@@ -830,3 +862,64 @@ function gotoTarget(lon,lat) {
     if(zoom==false) { map.zoomToMaxExtent(); }
     else { map.zoomTo(13); }
 }
+
+/*
+* Search
+* läuft hier nicht da ich noch keine ahnung vom aufbau des geocoder.php scripts habe
+*/
+function search(q) {
+    maps_debug("Search: "+q);
+    stats("search/?s="+q);
+    show_loading_bar(_("Searching..."));
+    // Geocode
+    //$.getJSON('ajax/geocoder.php?q=' + q, function(data) {
+    $.ajax({
+        // Define AJAX properties.
+        method: "get",
+        url: 'ajax/geocoder.php?q=' + q,
+			  //url: 'http://nominatim.openstreetmap.org/search?format=json&q=' + q,
+        dataType: "json",
+        timeout: 10000, // timeout in milliseconds; 1s = 1000ms
+        // Got a place
+        success: function(data){
+            // Hide "searching"
+            hide_loading_bar();
+            maps_debug("Search results came from: "+data.service+"<br /> - Locality: "+data.locality+"<br /> - Country: "+data.country_code);
+            // If we got a bounding box as an answr, use it:
+            if(data.boundingbox != undefined) {
+                //maps_debug("Search found: lat: "+data.lat+", lon: "+data.lon);
+                maps_debug("Moving to the bounding box: "+data.boundingbox);
+                // build a bounding box coordinates and zoom in
+                var boundingbox = data.boundingbox.split(',');
+                bounds = new OpenLayers.Bounds();
+                bounds.extend( new OpenLayers.LonLat(boundingbox[2],boundingbox[0]) );
+                bounds.extend( new OpenLayers.LonLat(boundingbox[3],boundingbox[1]) );
+                map.zoomToExtent( bounds );
+            }
+            else if(data.lat != undefined && data.lon != undefined) {
+                maps_debug("Moving to lat+lon.");
+                if(data.zoom == undefined) searchZoom = 5;
+                else searchZoom = data.zoom;
+                zoomMapIn(data.lat, data.lon, searchZoom);
+            }
+            // We got a result, but nada...
+            else {
+                maps_debug("Search didn't find anything.");
+                info_dialog('<p>'+_("Your search did not match any places.")+'</p><p>'+_("Try searching in English and add a country name in to your search.")+'</p><p>'+_("Example:")+' Vilnius, Lithuania.</p>', _('Not found'), false);
+            }
+        },
+        // Didn't find anything...
+        error: function( objAJAXRequest, strError ){
+                   maps_debug("Search didn't find anything. Error type: "+strError);
+                   // Hide "searching"
+                   hide_loading_bar();
+                   info_dialog('<p>'+_("Your search did not match any places.")+'</p><p>'+_("Try searching by english city names or/and add a country name with cities."), _('Not found'), false);
+               }
+    });
+    //});
+    // Close open stuff
+    close_cards();
+    close_page();
+    return false;
+}
+
