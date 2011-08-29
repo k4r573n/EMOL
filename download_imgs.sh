@@ -1,3 +1,8 @@
+#!/bin/bash
+mkdir js
+mkdir js/img
+cd js/img
+
 wget http://www.openstreetmap.org/openlayers/img/blank.gif
 wget http://www.openstreetmap.org/openlayers/img/cloud-popup-relative.png
 wget http://www.openstreetmap.org/openlayers/img/drag-rectangle-off.png
