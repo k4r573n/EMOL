@@ -3,6 +3,7 @@
 wget http://jqueryui.com/download/jquery-ui-1.8.16.custom.zip
 unzip jquery-ui-1.8.16.custom.zip
 rm jquery-ui-1.8.16.custom.zip
+rm index.html
 
 mkdir js
 cd js
