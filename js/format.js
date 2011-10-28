@@ -3,6 +3,8 @@ OpenLinkMap Copyright (C) 2010 Alexander Matheisen
 This program comes with ABSOLUTELY NO WARRANTY.
 This is free software, and you are welcome to redistribute it under certain conditions.
 See olm.openstreetmap.de/info for details.
+
+changed by Karsten Hinz <k.hinz@tu-bs.de> to use it with the hitch api
 */
 
 /*
@@ -19,7 +21,7 @@ See olm.openstreetmap.de/info for details.
 *  - <OpenLayers.Format>
 */
 
-OpenLayers.Format.OLM = OpenLayers.Class(OpenLayers.Format,
+OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format,
 {
 	/*
 	* APIProperty: defaultStyle
@@ -43,11 +45,17 @@ OpenLayers.Format.OLM = OpenLayers.Class(OpenLayers.Format,
 		{
 			options.defaultStyle =
 			{
-				'externalGraphic': OpenLayers.Util.getImagesLocation() + "marker.png",
-				'graphicWidth': 21,
-				'graphicHeight': 25,
-				'graphicXOffset': -10.5,
-				'graphicYOffset': -12.5
+                graphicZIndex: 1,
+                pointRadius: 5,//"${radius}",
+                strokeWidth: 2,
+                cursor: "pointer",
+                fillColor: "#000000",//#ffcc66
+                strokeColor: "#000000"//"${getColor}" // using context.getColor(feature)
+//				'externalGraphic': OpenLayers.Util.getImagesLocation() + "marker.png",
+//				'graphicWidth': 21,
+//				'graphicHeight': 25,
+//				'graphicXOffset': -10.5,
+//				'graphicYOffset': -12.5
 			};
 		}
 		OpenLayers.Format.prototype.initialize.apply(this, [options]);

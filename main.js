@@ -652,7 +652,7 @@ function refreshMapMarkers() {
         //$.getJSON('http://127.0.0.1/blindMap/api_hitchmap.php?callback=?', // lokal gehts eh
         //$.getJSON('http://www.brgs.org/users/k.hinz/api/api_hitchmap.php?callback=?', //geht
 				/*
-				 * BUG error messages are not JSONP encoded - this means that the function is not called if there are no results
+				 * BUG: error messages are not JSONP encoded - this means that the function is not called if there are no results
 				 */
         $.getJSON('http://hitchwiki.org/maps/api/?callback=?', //geht
             {
