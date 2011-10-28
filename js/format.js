@@ -73,30 +73,48 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format,
 	*/
 	read: function(text)
 	{
-		var lines = text.split("<br/>");
+		maps_debug("parse data (format)...");
 		var features = [];
-		// length - 1 to allow for trailing new line
-			for (var lcv = 0; lcv < (lines.length - 1); lcv++)
-			{
-				var currLine = lines[lcv].replace(/^\s*/,'').replace(/\s*$/,'');
-				if (currLine.charAt(0) != '|')
-				{
-					var vals = currLine.split('|');
+
+		// Loop markers we got trough
+		if(data.error != undefined)
+			maps_debug("error while loading hitchPlaces");
+		else{
+			// Go trough all markers
+			maps_debug("Starting markers each-loop...");
+			var markerStock = [];
+			$.each(data, function(key, value) {
+				/* Value includes:
+					 value.id;
+					 value.lat;
+					 value.lon;
+					 value.rating;
+					 */
 					var geometry = new OpenLayers.Geometry.Point(0,0);
+					var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
 					var attributes = {};
 					var style = this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
 					var icon, iconSize, iconOffset, overflow;
-					if (vals[0] && vals[1] && vals[2])
-					{
-						geometry.x = parseFloat(vals[0]);
-						geometry.y = parseFloat(vals[1]);
-						attributes['id'] = vals[2];
-						attributes['type'] = vals[3];
+					maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
+					geometry.x = coords.lat;
+					geometry.y = coords.lon;
+					attributes['id'] = id;
+					attributes['rating'] = rating;
 					var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
 					features.push(feature);
-					}
-				}
-			}
+					maps_debug("...done.");
+
+				//if(markers[value.id] != true) {
+				//	markers[value.id] = true;
+				//}
+				//else {
+				//	maps_debug("marker #"+value.id +" already on the map.");
+				//}
+
+				// each * end
+			});
+		}
+
 		return features;
 	},   
 	CLASS_NAME: "OpenLayers.Format.OSMPOI" 
