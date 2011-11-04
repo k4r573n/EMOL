@@ -66,24 +66,24 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format,
 	* Return a list of features from a Space Seperated Values text string.
 	* 
 	* Parameters:
-	* data - {String} 
+	* json - {String} 
 	*
 	* Returns:
 	* An Array of <OpenLayers.Feature.Vector>s
 	*/
-	read: function(text)
+	read: function(json)
 	{
 		maps_debug("parse data (format)...");
 		var features = [];
 
 		// Loop markers we got trough
-		if(data.error != undefined)
+		if(json.error != undefined)
 			maps_debug("error while loading hitchPlaces");
 		else{
 			// Go trough all markers
 			maps_debug("Starting markers each-loop...");
 			var markerStock = [];
-			$.each(data, function(key, value) {
+			$.each(json, function(key, value) {
 				/* Value includes:
 					 value.id;
 					 value.lat;
