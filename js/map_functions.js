@@ -45,45 +45,45 @@ function init_map() {
 		///////////////////////////////////////////////////////////////////////////////7
 
 	// styles for object layer
-//	var objectsStyle = new OpenLayers.Style(
-//	{
-//		pointRadius: 8,//"${radius}",
-//		strokeColor: "#000000",
-//		strokeWidth: 2,
-//		fillColor: "#FF0000",
-//		fillOpacity: 1,//0.2,
-//		cursor: "pointer"
-//		},
-//		{
-//			context: {
-//				radius: function(feature)
-//				{
-//					return Math.min(feature.attributes.count, 7) + 4;
-//				}
-//		}
-//	});
-//	var objectsStyleSelected = new OpenLayers.Style(
-//	{
-//		pointRadius: 5,//"${radius}",
-//		strokeColor: "#0860d5",
-//		strokeWidth: 4,
-//		fillColor: "#0860d5",
-//		fillOpacity: 0.3,
-//		cursor: "pointer"
-//		},
-//		{
-//			context: {
-//				radius: function(feature)
-//				{
-//					return Math.min(feature.attributes.count, 7) + 5;
-//				}
-//		}
-//	});
-//	var objectsStyleMap = new OpenLayers.StyleMap(
-//	{
-//		'default': objectsStyle,
-//		'select': objectsStyleSelected
-//	});
+	var objectsStyle = new OpenLayers.Style(
+	{
+		pointRadius: 8,//"${radius}",
+		strokeColor: "#000000",
+		strokeWidth: 2,
+		fillColor: "#FF0000",
+		fillOpacity: 1,//0.2,
+		cursor: "pointer"
+		},
+		{
+			context: {
+				radius: function(feature)
+				{
+					return Math.min(feature.attributes.count, 7) + 4;
+				}
+		}
+	});
+	var objectsStyleSelected = new OpenLayers.Style(
+	{
+		pointRadius: 5,//"${radius}",
+		strokeColor: "#0860d5",
+		strokeWidth: 4,
+		fillColor: "#0860d5",
+		fillOpacity: 0.3,
+		cursor: "pointer"
+		},
+		{
+			context: {
+				radius: function(feature)
+				{
+					return Math.min(feature.attributes.count, 7) + 5;
+				}
+		}
+	});
+	var objectsStyleMap = new OpenLayers.StyleMap(
+	{
+		'default': objectsStyle,
+		'select': objectsStyleSelected
+	});
 	var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
 	layer_style.fillOpacity = 1;
 	layer_style.graphicOpacity = 1;
@@ -95,7 +95,7 @@ function init_map() {
 		visibility: true,
 		//transitionEffect: 'resize',
 		//styleMap: objectsStyleMap,
-		style: layer_style,
+		//style: layer_style,
 		strategies:
 		[
 			//new OpenLayers.Strategy.BBOX({ratio: 2.5})
@@ -104,7 +104,7 @@ function init_map() {
    protocol: new OpenLayers.Protocol.Script({
           url: "http://127.0.0.1/api/api_hitchmap.php",
 					params: {who: "k4", lang: "de_DE"},
-					format: new OpenLayers.Format.HITCH()
+					format: new OpenLayers.Format.HITCH2()
 		})
  });
 	map.addLayer(objectsLayer);

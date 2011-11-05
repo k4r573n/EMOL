@@ -76,6 +76,11 @@ OpenLayers.Format.HITCH2 = OpenLayers.Class(OpenLayers.Format,
 		maps_debug("parse data (format)...");
 		var features = [];
 
+	var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+	layer_style.fillOpacity = 1;
+	layer_style.fillColor = "#ff0000";
+	layer_style.graphicOpacity = 1;
+
 		// Loop markers we got trough
 		if(json.error != undefined)
 			maps_debug("error while loading hitchPlaces");
@@ -93,11 +98,11 @@ OpenLayers.Format.HITCH2 = OpenLayers.Class(OpenLayers.Format,
 					var geometry = new OpenLayers.Geometry.Point(0,0);
 					var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
 					var attributes = {};
-					var style = this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
+					var style = layer_style;//this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
 					var icon, iconSize, iconOffset, overflow;
 					maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
-					geometry.x = 0;//coords.lat;
-					geometry.y = 0;//coords.lon;
+					geometry.x = coords.lon;
+					geometry.y = coords.lat;
 					attributes['id'] = value.id;
 					attributes['rating'] = value.rating;
 					var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);

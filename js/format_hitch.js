@@ -87,18 +87,18 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
 						 value.rating;
 						 */
 					//die coords müssen komischer weise in mercator-projektion angegeben werden?!
-						var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(new OpenLayers.Projection("EPSG:4326"), projmerc);
+						var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326, projmerc);
 						var geometry = new OpenLayers.Geometry.Point(coords.lon, coords.lat);
 						maps_debug("coords: "+lon+" "+lat);
 						//var geometry = new OpenLayers.Geometry.Point(0,0);
 						var attributes = {};
-						//var style = this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
+						var style = this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
 						//var icon, iconSize, iconOffset, overflow;
 						maps_debug("Adding marker #"+value.id +"<br />("+value.lon+" "+value.lat+")...");
 						attributes['id'] = value.id;
 						attributes['rating'] = value.rating;
 						var feature = new OpenLayers.Feature.Vector(geometry, attributes);
-					 //var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
+					 var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
 						features.push(feature);
 						maps_debug("...done.");
 
