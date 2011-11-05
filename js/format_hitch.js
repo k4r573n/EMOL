@@ -23,7 +23,8 @@
 * Inherits from:
 * - <OpenLayers.Format.JSON>
 */
-OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
+//OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
+OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.JSON, {
 
     /**
 * APIProperty: ignoreExtraDims
