@@ -95,11 +95,11 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format,
 					var attributes = {};
 					var style = this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
 					var icon, iconSize, iconOffset, overflow;
-					maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
+					maps_debug("Adding marker #"+value.id +"<br />("+value.lat+", "+value.lon+")...");
 					geometry.x = coords.lat;
 					geometry.y = coords.lon;
-					attributes['id'] = id;
-					attributes['rating'] = rating;
+					attributes['id'] = value.id;
+					attributes['rating'] = value.rating;
 					var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
 					features.push(feature);
 					maps_debug("...done.");

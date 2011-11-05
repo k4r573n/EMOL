@@ -44,67 +44,70 @@ function init_map() {
 		///////////////////////////////////////////////////////////////////////////////7
 
 	// styles for object layer
-	var objectsStyle = new OpenLayers.Style(
-	{
-		pointRadius: 5,//"${radius}",
-		strokeColor: "#000000",
-		strokeWidth: 2,
-		fillColor: "#000000",
-		fillOpacity: 0.2,
-		cursor: "pointer"
-		},
-		{
-			context: {
-				radius: function(feature)
-				{
-					return Math.min(feature.attributes.count, 7) + 4;
-				}
-		}
-	});
-	var objectsStyleSelected = new OpenLayers.Style(
-	{
-		pointRadius: 5,//"${radius}",
-		strokeColor: "#0860d5",
-		strokeWidth: 4,
-		fillColor: "#0860d5",
-		fillOpacity: 0.3,
-		cursor: "pointer"
-		},
-		{
-			context: {
-				radius: function(feature)
-				{
-					return Math.min(feature.attributes.count, 7) + 5;
-				}
-		}
-	});
-	var objectsStyleMap = new OpenLayers.StyleMap(
-	{
-		'default': objectsStyle,
-		'select': objectsStyleSelected
-	});
+//	var objectsStyle = new OpenLayers.Style(
+//	{
+//		pointRadius: 8,//"${radius}",
+//		strokeColor: "#000000",
+//		strokeWidth: 2,
+//		fillColor: "#FF0000",
+//		fillOpacity: 1,//0.2,
+//		cursor: "pointer"
+//		},
+//		{
+//			context: {
+//				radius: function(feature)
+//				{
+//					return Math.min(feature.attributes.count, 7) + 4;
+//				}
+//		}
+//	});
+//	var objectsStyleSelected = new OpenLayers.Style(
+//	{
+//		pointRadius: 5,//"${radius}",
+//		strokeColor: "#0860d5",
+//		strokeWidth: 4,
+//		fillColor: "#0860d5",
+//		fillOpacity: 0.3,
+//		cursor: "pointer"
+//		},
+//		{
+//			context: {
+//				radius: function(feature)
+//				{
+//					return Math.min(feature.attributes.count, 7) + 5;
+//				}
+//		}
+//	});
+//	var objectsStyleMap = new OpenLayers.StyleMap(
+//	{
+//		'default': objectsStyle,
+//		'select': objectsStyleSelected
+//	});
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector("Hitchhiking Spots",
 	{
 		projection: proj4326,
-		maxResolution: 10.0,
+		//maxResolution: 10.0,
 		visibility: true,
-		transitionEffect: 'resize',
-		styleMap: objectsStyleMap,
+		//transitionEffect: 'resize',
+		//styleMap: objectsStyleMap,
 		strategies:
 		[
-			//new OpenLayers.Strategy.BBOX({ratio: 2.5})
-			new OpenLayers.Strategy.BBOX()
+			new OpenLayers.Strategy.BBOX({ratio: 2.5})
+			//new OpenLayers.Strategy.BBOX()
 		],
 ///		//Wichtig damit HTTP geht muss es auf dem selben server liegen (gleicher namespace)
 ///		protocol: new OpenLayers.Protocol.HTTP(
 ///		{
 ///			url: "http://127.0.0.1/api/api_hitchmap.php",
-///			params: {who: "k4", lang: "de_DE"},
-///			format: new OpenLayers.Format.HITCH()
+///			params: {who: "k4", lang: "de_DE", callback: "a"},
+///			format: new OpenLayers.Format.HITCH(),
+///			callback: function(resp){this.addFeatures(resp.features)}
 ///		})
    protocol: new OpenLayers.Protocol.Script({
           url: "http://127.0.0.1/api/api_hitchmap.php",
+					params: {who: "k4", lang: "de_DE"},
+					format: new OpenLayers.Format.HITCH()
 		})
  });
 	map.addLayer(objectsLayer);
