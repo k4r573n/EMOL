@@ -82,7 +82,7 @@ function search(q) {
 		else if (isLonLat(q) != null)
 		{
 			var m = isLonLat(q);
-			maps_debug("lonlat: "+m[1]);
+			maps_debug("lonlat: "+m[1]+" "+m[2]);
 			//m = {lon, lat}
 			zoomMapIn(m[1],m[2],16);
 		}

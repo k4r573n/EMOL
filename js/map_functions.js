@@ -20,6 +20,7 @@ function init_map() {
         numZoomLevels: 18,
         units: 'm',
         projection: new OpenLayers.Projection("EPSG:900913"),
+        //projection: new OpenLayers.Projection("EPSG:4326"),
         displayProjection: new OpenLayers.Projection("EPSG:4326"),
 
         controls:[
@@ -83,27 +84,23 @@ function init_map() {
 //		'default': objectsStyle,
 //		'select': objectsStyleSelected
 //	});
+	var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+	layer_style.fillOpacity = 1;
+	layer_style.graphicOpacity = 1;
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector("Hitchhiking Spots",
 	{
-		projection: proj4326,
+		//projection: proj4326,
 		//maxResolution: 10.0,
 		visibility: true,
 		//transitionEffect: 'resize',
 		//styleMap: objectsStyleMap,
+		style: layer_style,
 		strategies:
 		[
-			new OpenLayers.Strategy.BBOX({ratio: 2.5})
-			//new OpenLayers.Strategy.BBOX()
+			//new OpenLayers.Strategy.BBOX({ratio: 2.5})
+			new OpenLayers.Strategy.BBOX()
 		],
-///		//Wichtig damit HTTP geht muss es auf dem selben server liegen (gleicher namespace)
-///		protocol: new OpenLayers.Protocol.HTTP(
-///		{
-///			url: "http://127.0.0.1/api/api_hitchmap.php",
-///			params: {who: "k4", lang: "de_DE", callback: "a"},
-///			format: new OpenLayers.Format.HITCH(),
-///			callback: function(resp){this.addFeatures(resp.features)}
-///		})
    protocol: new OpenLayers.Protocol.Script({
           url: "http://127.0.0.1/api/api_hitchmap.php",
 					params: {who: "k4", lang: "de_DE"},
