@@ -18,7 +18,7 @@ function init_map() {
         maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,20037508.34,20037508.34),
         maxResolution: 156543.0339,
         numZoomLevels: 18,
-        units: 'm',
+        units: 'meters',
         projection: new OpenLayers.Projection("EPSG:900913"),
         //projection: new OpenLayers.Projection("EPSG:4326"),
         displayProjection: new OpenLayers.Projection("EPSG:4326"),
@@ -44,67 +44,23 @@ function init_map() {
 		//copyed from OLM objectlayer
 		///////////////////////////////////////////////////////////////////////////////7
 
-	// styles for object layer
-	var objectsStyle = new OpenLayers.Style(
-	{
-		pointRadius: 8,//"${radius}",
-		strokeColor: "#000000",
-		strokeWidth: 2,
-		fillColor: "#FF0000",
-		fillOpacity: 1,//0.2,
-		cursor: "pointer"
-		},
-		{
-			context: {
-				radius: function(feature)
-				{
-					return Math.min(feature.attributes.count, 7) + 4;
-				}
-		}
-	});
-	var objectsStyleSelected = new OpenLayers.Style(
-	{
-		pointRadius: 5,//"${radius}",
-		strokeColor: "#0860d5",
-		strokeWidth: 4,
-		fillColor: "#0860d5",
-		fillOpacity: 0.3,
-		cursor: "pointer"
-		},
-		{
-			context: {
-				radius: function(feature)
-				{
-					return Math.min(feature.attributes.count, 7) + 5;
-				}
-		}
-	});
-	var objectsStyleMap = new OpenLayers.StyleMap(
-	{
-		'default': objectsStyle,
-		'select': objectsStyleSelected
-	});
-	var layer_style = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-	layer_style.fillOpacity = 1;
-	layer_style.graphicOpacity = 1;
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector("Hitchhiking Spots",
 	{
-		//projection: proj4326,
-		//maxResolution: 10.0,
+		projection: proj4326,
+		maxResolution: 360.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
 		visibility: true,
-		//transitionEffect: 'resize',
-		//styleMap: objectsStyleMap,
-		//style: layer_style,
+		transitionEffect: 'resize',
 		strategies:
 		[
-			//new OpenLayers.Strategy.BBOX({ratio: 2.5})
-			new OpenLayers.Strategy.BBOX()
+			new OpenLayers.Strategy.BBOX({ratio: 1.5})
+			//new OpenLayers.Strategy.BBOX()
 		],
    protocol: new OpenLayers.Protocol.Script({
-          url: "http://127.0.0.1/api/api_hitchmap.php",
-					params: {who: "k4", lang: "de_DE"},
-					format: new OpenLayers.Format.HITCH2()
+				//url: "http://hitchwiki.org/maps/api/",//Problem: api will bounds - OL fragt nach bbox
+				url: "http://127.0.0.1/api/api_hitchmap.php",
+				params: {who: "k4", lang: "de_DE"},
+				format: new OpenLayers.Format.HITCH2()
 		})
  });
 	map.addLayer(objectsLayer);
@@ -139,4 +95,10 @@ function zoomMapIn(lon,lat, zoom) {
 
     if(zoom==false) { map.zoomToMaxExtent(); }
     else { map.zoomTo(zoom); }
+}
+
+// returns the current map bbox
+function getBounds()
+{
+	return map.getExtent().transform(map.getProjectionObject(), wgs84).toArray();
 }

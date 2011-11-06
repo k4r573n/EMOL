@@ -87,8 +87,7 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
 						 value.rating;
 						 */
 					//die coords müssen komischer weise in mercator-projektion angegeben werden?!
-						var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326, projmerc);
-						var geometry = new OpenLayers.Geometry.Point(coords.lon, coords.lat);
+						var geometry = new OpenLayers.Geometry.Point(parseFloat(value.lon), parseFloat(value.lat));
 						maps_debug("coords: "+lon+" "+lat);
 						//var geometry = new OpenLayers.Geometry.Point(0,0);
 						var attributes = {};

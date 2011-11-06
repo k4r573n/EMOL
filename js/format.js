@@ -96,13 +96,12 @@ OpenLayers.Format.HITCH2 = OpenLayers.Class(OpenLayers.Format,
 					 value.rating;
 					 */
 					var geometry = new OpenLayers.Geometry.Point(0,0);
-					var coords = new OpenLayers.LonLat(value.lon, value.lat).transform(proj4326,projmerc);
 					var attributes = {};
 					var style = layer_style;//this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
 					var icon, iconSize, iconOffset, overflow;
-					maps_debug("Adding marker #"+value.id +"<br />("+value.lon+", "+value.lat+")...");
-					geometry.x = coords.lon;
-					geometry.y = coords.lat;
+					maps_debug("Adding marker #"+value.id +"<br />("+value.lon+" "+value.lat+")...");
+					geometry.x = parseFloat(value.lon);
+					geometry.y = parseFloat(value.lat);
 					attributes['id'] = value.id;
 					attributes['rating'] = value.rating;
 					var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
