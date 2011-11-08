@@ -45,24 +45,7 @@ function init_map() {
 		///////////////////////////////////////////////////////////////////////////////7
 
 	// adding objects overlay
-	objectsLayer = new OpenLayers.Layer.Vector("Hitchhiking Spots",
-	{
-		projection: proj4326,
-		maxResolution: 360.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
-		visibility: true,
-		transitionEffect: 'resize',
-		strategies:
-		[
-			new OpenLayers.Strategy.BBOX({ratio: 1.5})
-			//new OpenLayers.Strategy.BBOX()
-		],
-   protocol: new OpenLayers.Protocol.Script({
-				//url: "http://hitchwiki.org/maps/api/",//Problem: api will bounds - OL fragt nach bbox
-				url: "http://127.0.0.1/api/api_hitchmap.php",
-				params: {who: "k4", lang: "de_DE"},
-				format: new OpenLayers.Format.HITCH2()
-		})
- });
+	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots");
 	map.addLayer(objectsLayer);
 
 

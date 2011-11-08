@@ -24,15 +24,9 @@
 * - <OpenLayers.Format.JSON>
 */
 //OpenLayers.Format.GeoJSON = OpenLayers.Class(OpenLayers.Format.JSON, {
-OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
+//OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
+OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format, {
 
-    /**
-* APIProperty: ignoreExtraDims
-* {Boolean} Ignore dimensions higher than 2 when reading geometry
-* coordinates.
-*/
-    ignoreExtraDims: true,
-    
     /**
 * Constructor: OpenLayers.Format.GeoJSON
 * Create a new parser for GeoJSON.
@@ -41,6 +35,37 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
 * options - {Object} An optional object whose properties will be set on
 * this instance.
 */
+
+    /**
+* Method: parseHitchSpot
+* Convert a feature object from hitchwiki-json into an
+* <OpenLayers.Feature.Vector>.
+*
+* Parameters:
+* obj - {Object} An object created from a hitchwiki-json object
+*
+* Returns:
+* {<OpenLayers.Feature.Vector>} A feature.
+*/
+    parseFeature: function(obj) {
+					/*Object includes:
+						 obj.id;
+						 obj.lat;
+						 obj.lon;
+						 obj.rating;
+						 */
+				maps_debug("feature ...parseing");
+        var feature, geometry, attributes = [];
+        attributes['id'] = obj.id;
+        attributes['rating'] = obj.rating;
+				geometry = new OpenLayers.Geometry.Point(parseFloat(obj.lon), parseFloat(obj.lat));
+
+        feature = new OpenLayers.Feature.Vector(geometry, attributes);
+        if(obj.id) {
+            feature.fid = obj.id;
+        }
+        return feature;
+    },
 
     /**
 * APIMethod: read
@@ -67,10 +92,13 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
 * represent a single feature, and the return will be an
 * <OpenLayers.Feature.Vector>.
 */
-//TODO HitchSpot einbauen - parseHitchSpot nutzen!
-    read: function(json, type, filter) {
+    read: function(json) {
 			maps_debug("parse data (format)...");
 			var features = [];
+			//var obj = null;
+
+			var obj = json;//OpenLayers.Format.JSON.prototype.read.apply(this,
+							//[json, null]);
 
 			// Loop markers we got trough
 			if(json.error != undefined)
@@ -79,27 +107,15 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
 				// Go trough all markers
 				maps_debug("Starting markers each-loop...");
 				var markerStock = [];
-				$.each(json, function(key, value) {
-					/* Value includes:
-						 value.id;
-						 value.lat;
-						 value.lon;
-						 value.rating;
-						 */
-					//die coords müssen komischer weise in mercator-projektion angegeben werden?!
-						var geometry = new OpenLayers.Geometry.Point(parseFloat(value.lon), parseFloat(value.lat));
-						maps_debug("coords: "+lon+" "+lat);
-						//var geometry = new OpenLayers.Geometry.Point(0,0);
-						var attributes = {};
-						var style = this.defaultStyle ? OpenLayers.Util.applyDefaults({}, this.defaultStyle) : null;
-						//var icon, iconSize, iconOffset, overflow;
-						maps_debug("Adding marker #"+value.id +"<br />("+value.lon+" "+value.lat+")...");
-						attributes['id'] = value.id;
-						attributes['rating'] = value.rating;
-						var feature = new OpenLayers.Feature.Vector(geometry, attributes);
-					 var feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
-						features.push(feature);
-						maps_debug("...done.");
+				for(var i=0, len=obj.length; i<len; ++i) {
+				//$.each(json, function(key, value) {
+					 try {
+						features.push(this.parseFeature(obj[i]));
+					 } catch (err){
+						 maps_debug("feature parsing error.");
+						 throw err;
+					 }
+						maps_debug("feature ...done.");
 
 					//if(markers[value.id] != true) {
 					//	markers[value.id] = true;
@@ -109,68 +125,13 @@ OpenLayers.Format.HITCH = OpenLayers.Class(OpenLayers.Format.GeoJSON, {
 					//}
 
 					// each * end
-				});
+				//});
+				}
 			}
 
 			return features;
     },
     
-    /**
-* Method: parseHitchSpot
-* Convert a feature object from GeoJSON into an
-* <OpenLayers.Feature.Vector>.
-*
-* Parameters:
-* obj - {Object} An object created from a GeoJSON object
-*
-* Returns:
-* {<OpenLayers.Feature.Vector>} A feature.
-*/
-//    parseHitchSpot: function(obj) {
-//        var feature, geometry, attributes, bbox;
-//        attributes['id'] = obj.id;
-//        attributes['rating'] = obj.rating;
-//        var coords = new OpenLayers.LonLat(obj.lon, obj.lat).transform(proj4326, map.getProjectionObject());
-//        geometry = new OpenLayers.Geometry.Point(coords.lat, coords.lat);
-//        //irgendeinen hüpschen styl 
-//        var colors = [    
-//                    "#ffffff", // rate 0 (white)
-//                    "#00ad00", // rate 1 (green)
-//                    "#96ad00", // rate 2
-//                    "#ffff00", // rate 3
-//                    "#ff8d00", // rate 4
-//                    "#ff0000"  // rate 5 (red)
-//                ];
-//    
-//        // Get rating from marker
-//        var markerContext = {
-//            getColor: function(feature) {
-//                         //TODO : geht das so?
-//                return colors[feature.attributes["rating"]];
-//            }
-//        };
-//
-//        var style = new OpenLayers.Style(
-//                          {
-//                graphicZIndex: 1,
-//                pointRadius: 5,//"${radius}",
-//                strokeWidth: 2,
-//                cursor: "pointer",
-//                fillColor: "#000000",//#ffcc66
-//                strokeColor: "${getColor}" // using context.getColor(feature)
-//            }, {context: markerContext});
-//
-//
-//        feature = new OpenLayers.Feature.Vector(geometry, attributes, style);
-//        if(bbox) {
-//            feature.bounds = OpenLayers.Bounds.fromArray(bbox);
-//        }
-//        if(obj.id) {
-//            feature.fid = obj.id;
-//        }
-//        return feature;
-//    },
-
     CLASS_NAME: "OpenLayers.Format.HITCH"
 
 }); 
