@@ -1,0 +1,8 @@
+14c14
+< 		<fileset dir="../../trunk/core/lib" includes="**/*.jar"/>
+---
+> 		<fileset dir="../osmosis-0.39/lib" includes="**/*.jar"/>
+26c26
+< 		<javac srcdir="src" destdir="build/classes" debuglevel="lines,vars,source" classpathref="libs" classpath="../../trunk/core/build/binary/osmosis-core.jar" />
+---
+> 		<javac srcdir="src" destdir="build/classes" debuglevel="lines,vars,source" classpathref="libs" classpath="../../trunk/core/build/binary/osmosis-core.jar" includeantruntime="false"/>

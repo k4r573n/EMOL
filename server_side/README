@@ -1,0 +1,28 @@
+copyed from
+
+http://goblor.de/wp/2009/10/16/openstreetmap-projekt-teil-1-openstreetmap-daten-in-mysql-datenbank-einlesen/
+
+http://wiki.openstreetmap.org/wiki/Osmosis/Detailed_Usage_0.39#--mysql-simple-dump_.28--wmsd.29
+
+
+um osmosis mit plugin zuinstallieren beachte:
+
+********************************************
+osmosis installation mit sql export plugin
+*******************************************
+
+Installation:
+http://wiki.openstreetmap.org/wiki/DE:Osmosis/Installation
+
+Plugin:
+http://svn.openstreetmap.org/applications/utils/osmosis/plugins/mysql_simple/
+
+das build script build.xml muss gepatched werden
+
+dann mit
+ant build package
+compilieren und "my*.jar" unter "./lib/default" kopieren
+
+#### Nutzen ####
+
+osmosis --rx data.osm --wmsd data.sql
