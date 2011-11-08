@@ -64,7 +64,7 @@ OpenLayers.Layer.Vector.HitchSpots = OpenLayers.Class(OpenLayers.Layer.Vector, {
 									who: "k4", 
 									lang: "de_DE"
 								},
-								format: new OpenLayers.Format.HITCH()
+								format: new OpenLayers.Format.Hitch()
 						}),
 						styleMap: new OpenLayers.StyleMap({
 								"default": new OpenLayers.Style({
