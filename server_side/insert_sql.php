@@ -1,6 +1,9 @@
 <?php
 /*
  * A script to fill data in the mysql tables
+ * copied from the net
+ *
+ * !!! untested !!!
  *
  */
 
@@ -52,7 +55,7 @@ function MultiQuery($sqlfile, $sqldelimiter = ';') {
 						echo '<tr><td>SUCCESS:</td><td>' . $query . '</td></tr>';
 					}
 
-					while (ob_get_level() &gt; 0) {
+					while (ob_get_level() > 0) {
 						ob_end_flush();
 					}
 
