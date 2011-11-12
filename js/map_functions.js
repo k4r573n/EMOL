@@ -47,6 +47,10 @@ function init_map() {
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots");
 	map.addLayer(objectsLayer);
+	//
+	// adding accessibillity overlay
+	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheel Chair pois");
+	map.addLayer(wheelLayer);
 
 
     //position in map
