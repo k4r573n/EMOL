@@ -53,6 +53,41 @@ function init_map() {
 	map.addLayer(wheelLayer);
 
 
+	wheelLayer.events.on({
+				'featureselected': onFeatureSelect,
+				'featureunselected': onFeatureUnselect
+	});
+
+	drawControls = {
+			select: new OpenLayers.Control.SelectFeature(
+					wheelLayer,
+					{
+						clickout: true
+					}
+		//			),
+		//	hover: new OpenLayers.Control.SelectFeature(
+		//			wheelLayer, 
+		//			{
+		//					hover: true,
+		//					highlightOnly: true,
+		//					renderIntent: "temporary",
+		//					//eventListeners: {
+		//					//		beforefeaturehighlighted: report,
+		//					//		featurehighlighted: report,
+		//					//		featureunhighlighted: report
+		//					//}
+		//			}
+		//		
+			//),
+			)
+	};
+	
+	for(var key in drawControls) {
+			map.addControl(drawControls[key]);
+			drawControls[key].activate();
+	}
+
+
     //position in map
     if( ! map.getCenter() ){
         var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
@@ -88,4 +123,17 @@ function zoomMapIn(lon,lat, zoom) {
 function getBounds()
 {
 	return map.getExtent().transform(map.getProjectionObject(), wgs84).toArray();
+}
+
+function onFeatureSelect(evt) {
+	feature = evt.feature;
+
+	$("#counter").text(this.selectedFeatures.length);
+	//alert("hallo "+ this.selectedFeatures.length);
+}
+
+function onFeatureUnselect(evt) {
+	feature = evt.feature;
+	$("#counter").text(this.selectedFeatures.length);
+	//alert("tschüss "+ this.selectedFeatures.length);
 }
