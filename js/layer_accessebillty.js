@@ -47,7 +47,7 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 
         options = OpenLayers.Util.extend({
 						projection: proj4326,
-						maxResolution: 360.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
+						maxResolution: 10.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
 						visibility: true,
 						transitionEffect: 'resize',
 						strategies: 

@@ -45,7 +45,7 @@ function init_map() {
 		///////////////////////////////////////////////////////////////////////////////7
 
 	// adding objects overlay
-	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots");
+	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots",{visibility:false});
 	map.addLayer(objectsLayer);
 	//
 	// adding accessibillity overlay
