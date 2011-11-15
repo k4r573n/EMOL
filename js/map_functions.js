@@ -49,7 +49,7 @@ function init_map() {
 	map.addLayer(objectsLayer);
 	//
 	// adding accessibillity overlay
-	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheel Chair pois");
+	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
 	map.addLayer(wheelLayer);
 
 
@@ -148,27 +148,27 @@ function getDetails(id) {
     maps_debug("Calling details API (load)... ");
 
 		//var api_url = "http://127.0.0.1/xp/server_side/";
-		var api_url = "http://bastler.bplaced.net/osm/wheelchair/";
+		var api_url = "http://bastler.bplaced.net/osm/";
     $.getJSON(api_url + 'api_tests.php?callback=?', //is running :)
         {
           id: id
         },
 			function(data) {
-
-				// Go trough all markers
-				maps_debug("Starting locations each-loop...");
-				//empty location list
-				// Loop markers we got trough
-				var locStock = [];
-				$.each(data, function(key, value) {
-					/* Value includes:
-						 value.id;
-						 value.lat;
-						 value.lon;
-             ...
-						 */
-          maps_debug(' ('+value.lat+', '+value.lon+') ');
-					//addLocation(value);
-				});
+          maps_debug('POI Details ('+data.lat+', '+data.lon+') ');
+					addNodeDetails(data);
 			});
+}
+
+/*
+ * shows the node details at the sidebar
+ */
+function addNodeDetails(data) {
+	$("#lon").text(data.lon);
+	$("#lat").text(data.lat);
+
+	$("#describtion").text("");
+	// Loop attributs we got trough
+	$.each(data.attributs, function(key, value) {
+		$("#describtion").append(value.k + " : "+ value.v + "<br>");
+	});
 }
