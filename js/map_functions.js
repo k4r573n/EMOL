@@ -62,7 +62,7 @@ function init_map() {
 			select: new OpenLayers.Control.SelectFeature(
 					wheelLayer,
 					{
-						clickout: true
+						clickout: false
 					}
 		//			),
 		//	hover: new OpenLayers.Control.SelectFeature(
@@ -127,6 +127,7 @@ function getBounds()
 
 function onFeatureSelect(evt) {
 	feature = evt.feature;
+	getDetails(feature.fid);
 
 	$("#counter").text(this.selectedFeatures.length);
 	//alert("hallo "+ this.selectedFeatures.length);
@@ -136,4 +137,38 @@ function onFeatureUnselect(evt) {
 	feature = evt.feature;
 	$("#counter").text(this.selectedFeatures.length);
 	//alert("tschüss "+ this.selectedFeatures.length);
+}
+
+/**
+ * requests api for locations to show them on locationPanel
+ *
+ * TODO: completion
+ */
+function getDetails(id) {
+    maps_debug("Calling details API (load)... ");
+
+		//var api_url = "http://127.0.0.1/xp/server_side/";
+		var api_url = "http://bastler.bplaced.net/osm/wheelchair/";
+    $.getJSON(api_url + 'api_tests.php?callback=?', //is running :)
+        {
+          id: id
+        },
+			function(data) {
+
+				// Go trough all markers
+				maps_debug("Starting locations each-loop...");
+				//empty location list
+				// Loop markers we got trough
+				var locStock = [];
+				$.each(data, function(key, value) {
+					/* Value includes:
+						 value.id;
+						 value.lat;
+						 value.lon;
+             ...
+						 */
+          maps_debug(' ('+value.lat+', '+value.lon+') ');
+					//addLocation(value);
+				});
+			});
 }
