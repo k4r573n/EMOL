@@ -40,6 +40,16 @@ function init_map() {
     //layerCycleMap.setOpacity(0.4);
     map.addLayer(layerCycleMap);
 
+	var styleMap = new OpenLayers.StyleMap({
+			pointRadius: 20,
+		  externalGraphic: 'http://www.openlayers.org/dev/img/marker.png'
+	});
+	//layer for search results
+	search_markers = new OpenLayers.Layer.Vector( "Search Results",
+			{
+				styleMap: styleMap,
+			});
+	map.addLayer(search_markers);
 		///////////////////////////////////////////////////////////////////////////////7
 		//copyed from OLM objectlayer
 		///////////////////////////////////////////////////////////////////////////////7
@@ -47,10 +57,6 @@ function init_map() {
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots",{visibility:false});
 	map.addLayer(objectsLayer);
-
-	//layer for search results
-	markers = new OpenLayers.Layer.Markers( "Search Results" );
-	map.addLayer(markers);
 
 	//
 	// adding accessibillity overlay
@@ -93,18 +99,18 @@ function init_map() {
 	}
 
 
-    //position in map
-    if( ! map.getCenter() ){
-        var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-        map.setCenter (lonLat);
-    }
+	//position in map
+	if( ! map.getCenter() ){
+			var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+			map.setCenter (lonLat);
+	}
 
-    // Zoom
-    if(zoom==false) { map.zoomToMaxExtent(); }
-    else { map.zoomTo(zoom); }
-    // Let eventlisteners be free! :-)
-    // Meaning, they can be called from now on that page has stopped loading
-    mapEventlisteners = true; 
+	// Zoom
+	if(zoom==false) { map.zoomToMaxExtent(); }
+	else { map.zoomTo(zoom); }
+	// Let eventlisteners be free! :-)
+	// Meaning, they can be called from now on that page has stopped loading
+	mapEventlisteners = true; 
 }
 
 /*
@@ -116,18 +122,11 @@ function maps_debug(str) {
     $("#log ol").scrollTo( '100%',0,{axis:'y'} );
 } 
 
-function removeSearchMarkers() {
-
-		for (var old in markers.markers) {
-			markers.removeMarker(old);
-		}
-}
-
 function zoomMapIn(lon,lat, zoom) {
     var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 
-		removeSearchMarkers();
-		markers.addMarker(new OpenLayers.Marker(lonLat,search_icon));
+		search_markers.removeAllFeatures();
+		search_markers.addFeatures([new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(lonLat.lon,lonLat.lat),null)]);
 		map.setCenter (lonLat);
 
     if(zoom==false) { map.zoomToMaxExtent(); }

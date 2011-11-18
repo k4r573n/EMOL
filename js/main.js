@@ -15,7 +15,7 @@ var zoom=16;
 
 var map, //complex object of type OpenLayers.Map
 	objectsLayer, //hitchhiking spots
-	markers, //layer for search result markers
+	search_markers, //layer for search result markers
 	drawControls, //control elements
 	wheelLayer; //wheelchair pois
 // Missing tiles from the map
@@ -29,9 +29,6 @@ var markersZoomLimit = 6;
 var proj4326 = new OpenLayers.Projection("EPSG:4326");
 var projmerc = new OpenLayers.Projection("EPSG:900913"); 
 
-var size = new OpenLayers.Size(21,25);
-var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-var search_icon = new OpenLayers.Icon('http://www.openlayers.org/dev/img/marker.png',size,offset);
 // allow testing of specific renderers via "?renderer=Canvas", etc
 // use ist vor lat lon
 //var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;

@@ -65,6 +65,9 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 								},
 								format: new OpenLayers.Format.GeoJSON()
 						}),
+						rendererOptions: {
+							  zIndexing: true
+					  },
 						styleMap: new OpenLayers.StyleMap({
 								"default": new OpenLayers.Style({
 										externalGraphic: "${getIcon}",
