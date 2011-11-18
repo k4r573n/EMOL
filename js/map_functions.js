@@ -47,6 +47,11 @@ function init_map() {
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots",{visibility:false});
 	map.addLayer(objectsLayer);
+
+	//layer for search results
+	markers = new OpenLayers.Layer.Markers( "Search Results" );
+	map.addLayer(markers);
+
 	//
 	// adding accessibillity overlay
 	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
@@ -111,9 +116,19 @@ function maps_debug(str) {
     $("#log ol").scrollTo( '100%',0,{axis:'y'} );
 } 
 
+function removeSearchMarkers() {
+
+		for (var old in markers.markers) {
+			markers.removeMarker(old);
+		}
+}
+
 function zoomMapIn(lon,lat, zoom) {
     var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-    map.setCenter (lonLat);
+
+		removeSearchMarkers();
+		markers.addMarker(new OpenLayers.Marker(lonLat,search_icon));
+		map.setCenter (lonLat);
 
     if(zoom==false) { map.zoomToMaxExtent(); }
     else { map.zoomTo(zoom); }
@@ -165,10 +180,12 @@ function getDetails(id) {
 function addNodeDetails(data) {
 	$("#lon").text(data.lon);
 	$("#lat").text(data.lat);
+	$("#last_change").text(data.time);
+	$("#mapper").text(data.user);
 
 	$("#describtion").text("");
 	// Loop attributs we got trough
 	$.each(data.attributs, function(key, value) {
-		$("#describtion").append(value.k + " : "+ value.v + "<br>");
+		$("#describtion").append("<b>"+value.k + " :</b> "+ value.v + "<br>");
 	});
 }

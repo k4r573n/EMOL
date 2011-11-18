@@ -74,6 +74,8 @@
 					overflow-y: auto;
 					/* overflow-x: hidden; */
 					/* padding: 0; */
+					padding-left:10px;
+					padding-right:10px;
 					position: absolute;
 					right: 0;
 					top: 80px;
@@ -212,7 +214,19 @@
 
       .hidden {display:none;}
 
+			.h3 {
+				font-family: "Trebuchet MS","Lucida Grande","Bitstream Vera Sans",Helvetica,Arial,sans-serif;
+			}
+			#mapper {
+				font-weight: bold;
+			}
 
+			body, input, textarea, button, .button {
+				    color: #111111;
+						font-family: arial,helvetica,sans-serif;
+						font-size: 13px;
+						line-height: 18px;
+			}
 
 		</style>
 
@@ -242,15 +256,20 @@
 	 </div>
 
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: block;">
-		 <h3>Info Point</h3>goto
-		 <a href="#" class="goto">goto </a>
-		 lat: <div id="lat">0.00</div>
-		 lon: <div id="lon">0.00</div>
-		 describtion:
-		 <div id="describtion">desc</div>
-		 <div id="creation_date">date</div>
+		 <h3 style="margin: 2px 0px 2px;">Selected Point</h3>
 		 selected features:
-		 <div id="counter"></div>
+		 <span id="counter">0</span><br>
+		 <a href="#" id="goto">goto </a><br>
+		 lat: <span id="lat">0.00</span>
+		 lon: <span id="lon">0.00</span><br>
+		 <hr>
+		 <h3 style="margin: 1px 0px 2px;">Last change</h3> 
+		 <span id="mapper">user</span>
+		 <span id="last_change">date</span>
+		 <hr>
+		 <h3 style="margin: 1px 0px 3px;">Describtion:</h3>
+		 <div id="describtion">desc</div>
+		 <hr>
 	 </div>
 
 	 <div id="LineInfoPanel" class="InfoPanel" style="display: none;">
