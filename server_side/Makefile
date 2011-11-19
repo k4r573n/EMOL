@@ -31,18 +31,31 @@ $(INPUT):
 #oder http://osmxapi.hypercube.telascience.org/api/0.6/*[amenity=shop][bbox=10.492,52.254,10.5551,52.2801]
 #oder wget -O "$(INPUT)" "http://www.informationfreeway.org/api/0.6/*[$(OSM_KEY)=$(OSM_VALUE)][bbox=$(LEFT),$(BOTTOM),$(RIGHT),$(TOP)]"
 
+niedersachsen:
+	wget -O /tmp/nds.osm.bz2 http://download.geofabrik.de/osm/europe/germany/niedersachsen.osm.bz2
+	bzip2 -d /tmp/nds.osm.bz2
+
 convert:
 	osmosis --rx $(INPUT) --wmsd $(OSM_KEY).sql
+
+filterAndConvert:
+	osmosis --rx $(INPUT) \
+		--node-key  keyList="wheelchair,tactile_paving,traffic_signals:sound,information,description:de:blind,amenity,leisure" \
+	--wmsd upload.sql
 
 
 download: 
 	[ -e $(INPUT) ] && rm $(INPUT) || echo ""
 	make input
 
-dowheelchair:
+doWheelchair:
 	make OSM_KEY=wheelchair VALUE=*
 
 input: $(INPUT)
+
+upload: upload.sql
+	ftp-upload ...
+
 
 edit:
 	vim $(OSM_KEY).sql

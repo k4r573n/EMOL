@@ -52,7 +52,7 @@ function MultiQuery($sqlfile, $sqldelimiter = ';') {
 					if (mysql_query($query) === false) {
 						echo '<tr><td>ERROR:</td><td> ' . $query . '</td></tr>';
 					} else {
-						echo '<tr><td>SUCCESS:</td><td>' . $query . '</td></tr>';
+						//echo '<tr><td>SUCCESS:</td><td>' . $query . '</td></tr>';
 					}
 
 					while (ob_get_level() > 0) {
@@ -67,6 +67,7 @@ function MultiQuery($sqlfile, $sqldelimiter = ';') {
 				}
 			}
 			echo "</table>";
+			echo "Finish :D<br>";
 
 			return fclose($sqlfile);
 		}
