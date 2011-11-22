@@ -42,7 +42,13 @@ function init_map() {
 
 	var styleMap = new OpenLayers.StyleMap({
 			pointRadius: 20,
-		  externalGraphic: 'http://www.openlayers.org/dev/img/marker.png'
+			fillColor: "#ff0000",
+		  externalGraphic: './img/marker.png',
+			graphicXOffset: -24,
+			graphicYOffset: -48,
+			graphicWidth: 48,
+			graphicHeight: 48,
+			graphicTitle: "here we are"
 	});
 	//layer for search results
 	search_markers = new OpenLayers.Layer.Vector( "Search Results",
@@ -50,6 +56,8 @@ function init_map() {
 				styleMap: styleMap,
 			});
 	map.addLayer(search_markers);
+	map.setLayerIndex(search_markers, 99); //to render this layer oon top
+
 		///////////////////////////////////////////////////////////////////////////////7
 		//copyed from OLM objectlayer
 		///////////////////////////////////////////////////////////////////////////////7
@@ -57,11 +65,13 @@ function init_map() {
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots",{visibility:false});
 	map.addLayer(objectsLayer);
+	map.setLayerIndex(objectsLayer, 1); //to render this layer on bottom
 
 	//
 	// adding accessibillity overlay
 	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
 	map.addLayer(wheelLayer);
+	map.setLayerIndex(wheelLayer, 0); //to render this layer on bottom
 
 
 	wheelLayer.events.on({
@@ -104,6 +114,7 @@ function init_map() {
 			var lonLat = new OpenLayers.LonLat(lon, lat).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
 			map.setCenter (lonLat);
 	}
+
 
 	// Zoom
 	if(zoom==false) { map.zoomToMaxExtent(); }

@@ -38,6 +38,11 @@ niedersachsen:
 convert:
 	osmosis --rx $(INPUT) --wmsd $(OSM_KEY).sql
 
+filter:
+	osmosis --rx $(INPUT) \
+		--node-key  keyList="wheelchair,tactile_paving,traffic_signals:sound,information,description:de:blind,amenity,leisure" \
+	--write-xml filtered.osm
+
 filterAndConvert:
 	osmosis --rx $(INPUT) \
 		--node-key  keyList="wheelchair,tactile_paving,traffic_signals:sound,information,description:de:blind,amenity,leisure" \

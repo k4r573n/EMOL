@@ -68,7 +68,6 @@ OpenLayers.Layer.Vector.HitchSpots = OpenLayers.Class(OpenLayers.Layer.Vector, {
 						}),
 						styleMap: new OpenLayers.StyleMap({
 								"default": new OpenLayers.Style({
-										graphicZIndex: 1,
 										pointRadius: 5,//"${radius}",
 										strokeWidth: 2,
 										cursor: "pointer",
@@ -84,12 +83,10 @@ OpenLayers.Layer.Vector.HitchSpots = OpenLayers.Class(OpenLayers.Layer.Vector, {
 									 }
 								}),
 								"select": new OpenLayers.Style({
-										graphicZIndex: 2,
 										fillColor: "#66ccff",
 										strokeColor: "#3399ff"
 								}),
 								"hover": new OpenLayers.Style({
-										graphicZIndex: 2,
 										fillColor: "#3399ff"
 								})
 						}), //stylemap end

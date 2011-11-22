@@ -121,6 +121,8 @@ $(document).ready(function() {
         $("#test").click(function(event){
             event.preventDefault();
 						maps_debug("Zoom: "+map.getZoom());
+
+						map.raiseLayer(map.getLayersByName("Search Results")[0], map.layers.length-1);
 						//addLocation({"name":"test","desc":"eine beschreibung","lat":0,"lon":0, "zoom":10});
 						//addLocation("tttt");
 

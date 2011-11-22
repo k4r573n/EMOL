@@ -74,8 +74,8 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 										//pointRadius: 10,
 										graphicWidth:"32",//"${getSize}",
 										graphicHeight:"32",//"${getSize}",
-										graphicOpacity:0.90,
-										graphicZIndex: 1,
+										graphicOpacity:0.70,
+										graphicZIndex: 0,
 										cursor: "pointer",
 								},
 								{
@@ -94,12 +94,12 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 								"select": new OpenLayers.Style({
 										//externalGraphic: null,
 										graphicOpacity:1,
-										graphicZIndex: 3,
+										graphicZIndex: 1,
 										graphicWidth: 48,
 										graphicHeight: 48
 								}),
 								"hover": new OpenLayers.Style({
-										graphicZIndex: 2,
+										graphicZIndex: 1,
 										fillColor: "#3399ff"
 								})
 						}), //stylemap end
