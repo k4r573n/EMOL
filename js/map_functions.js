@@ -154,6 +154,9 @@ function onFeatureSelect(evt) {
 	feature = evt.feature;
 	getDetails(feature.fid);
 
+  $(".InfoPanel").hide();
+  $("#PointInfoPanel").show();
+
 	$("#counter").text(this.selectedFeatures.length);
 	//alert("hallo "+ this.selectedFeatures.length);
 }
