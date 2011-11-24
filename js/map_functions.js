@@ -40,6 +40,10 @@ function init_map() {
     //layerCycleMap.setOpacity(0.4);
     map.addLayer(layerCycleMap);
 
+		//ÖPNV Lines
+		map.addLayer(new OpenLayers.Layer.OSM("Public transport lines","http://openptmap.org/tiles/${z}/${x}/${y}.png",
+					{ maxZoomLevel: 17, numZoomLevels: 18, alpha: true, isBaseLayer: false, visibility: false }));
+
 	var styleMap = new OpenLayers.StyleMap({
 			pointRadius: 20,
 			fillColor: "#ff0000",
