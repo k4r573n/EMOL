@@ -28,7 +28,7 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 
         options = OpenLayers.Util.extend({
 						projection: proj4326,
-						maxResolution: 10.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
+						maxResolution: 14160.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
 						visibility: true,
 						transitionEffect: 'resize',
 						strategies: 
