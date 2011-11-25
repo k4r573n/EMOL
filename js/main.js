@@ -61,16 +61,16 @@ $(document).ready(function() {
         }
 
         //// Tools Panel - Opening/closing
-        //$(".toggle_tools, div#measureTools .close").click(function(e){
-        //    e.preventDefault();
-        //    $(this).blur();
-        //    $("div#measureTools").toggle();
-        //});
+        $(".toggle_tools, div#measureTools .close").click(function(e){
+            e.preventDefault();
+            $(this).blur();
+            $("div#measureTools").toggle();
+        });
 
-        //// Tools Panel - make it draggable
-        //$(".floatingPanel.draggable")
-        //.draggable({ handle: 'handle' })
-        //.attr("style","text-align:left; top: 100px; left: 60px; display: none;");
+        // Tools Panel - make it draggable
+        $(".floatingPanel.draggable")
+        .draggable({ handle: 'handle' })
+        .attr("style","text-align:left; top: 100px; left: 60px; display: none;");
 
 
 
@@ -154,44 +154,23 @@ $(document).ready(function() {
 				//	}
 				//});
 
-        /////example usage of the flicker api
-        ///$("#flicker_test").click(function(event){
-        ///    event.preventDefault();
 
-        ///    //get fotos from flicker - maby to conventions
-        ///    $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
-        ///      {
-        ///        tags: "cat",
-        ///        tagmode: "any",
-        ///        format: "json"
-        ///      },
-        ///      function(data) {
-        ///        alert("adf");
-        ///      //  $.each(data.items, function(i,item){
-        ///      //    $("<img/>").attr("src", item.media.m).appendTo("#images");
-        ///      //    if ( i == 3 ) return false;
-        ///      //  });
-        ///      });
-        ///    //$(this).hide("slow");
-        ///    $("#PointInfoPanel > #describtion").empty().append("new dtest");
-        ///});
-
-        //$(function() {
-            $( "#toggleLog" ).button(
-            {
-              icons: {primary: "ui-icon-custom"},
-              //icons: {primary: "ui-icon-locked"},
-              text: false
-            });
-
-            $( "#toggleMeasure" ).button(
-            {
-              //icons: {primary: "ui-icon-custom"},
-              icons: {primary: "ui-icon-locked"},
-              text: false
-            });
-            $( "#format" ).buttonset();
-        //});
+//        //$(function() {
+//            $( "#toggleLog" ).button(
+//            {
+//              icons: {primary: "ui-icon-custom"},
+//              //icons: {primary: "ui-icon-locked"},
+//              text: false
+//            });
+//
+//            $( "#toggleMeasure" ).button(
+//            {
+//              //icons: {primary: "ui-icon-custom"},
+//              icons: {primary: "ui-icon-locked"},
+//              text: false
+//            });
+//            $( "#format" ).buttonset();
+//        //});
 
         //move map to Braunschweig
         $("#braunschweig").click(function(event){

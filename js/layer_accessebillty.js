@@ -37,11 +37,11 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 						],
 						protocol: 
 						new OpenLayers.Protocol.Script({
-								//url: "http://hitchwiki.org/maps/api/",//Problem: api will bounds - OL fragt nach bbox
 								url: "http://bastler.bplaced.net/osm/api_tests.php",
 								params: 
 								{
 									who: "k4", 
+									filter: "wheelchair",
 								},
 								format: new OpenLayers.Format.GeoJSON()
 						}),

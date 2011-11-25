@@ -58,15 +58,6 @@
 					top: 80px;
 			}
 
-			div.olMap {
-				/*
-					cursor: default;
-					margin: 0 !important;
-					padding: 0 !important;
-					z-index: 0;
-					*/
-			}
-
 			div.InfoPanel {
 					background: none repeat scroll 0 0 #FAF9F3;
 					border-left: 1px solid #CCC4A0;
@@ -130,7 +121,7 @@
           -moz-border-right-colors: none;
           -moz-border-top-colors: none;
           /*background: url("../gfx/bg.png") repeat-x scroll left bottom #EDCA50;*/
-          background-color: #C9AB22;
+          background-color: #999999;/* #C9AB22;*/
           border-color: #C9AB22 #C9AB22 transparent;
           border-radius: 3px 3px 3px 3px;
           border-style: solid solid none;
@@ -277,15 +268,20 @@
 		 <h3>Willkommen auf dieser Experimentellen Karte</h3>
 		 z.Z. sind nur POIs aus niedersachsen Importiert
 		 <hr>
-		 <b>Last Update: </b>
+		 <b>Last Update Database: </b>
 		 <span id="last_update">22.11.11</span>
+		 <b>Last Update Code: </b>
+		 <span id="last_update">Today^^</span>
 		 <hr>
-		 mehr infos comming soon<br>
+		 <h3>Infos:</h3>
+		 comming soon<br>
 		 <hr>
 		 bei Fragen oder Anregungen schreibt mir eine Mail an
 		 <a href="mailto:k4r573n(at)tu-bs.de">k4r573n(at)tu-bs.de</a>
 		 oder schreibt mich via Jabber an: k4r573n@jabber.ccc.de
-
+		 <br>siehe auch im OSM-Wiki <a href="http://wiki.openstreetmap.org/user/k4r573n">k4r573n</a>
+		 <br><b>Code:</b><br>
+		 demnächst auf github
 	 </div>
 
 	 <div id="header" style="position: absolute; top:0px;right: 0px; left:0px; border-size: 2px; height:70px; margin: 10px 10px 10px 10px; /*background-color: #eebb33;*/">
@@ -302,7 +298,10 @@
       </form>
     </div>
 
-		 <a href="#" id="flicker_test">flicker </a> - 
+		 <a href="#" id="toggleLog" class="toggle_log">Debug</a> - 
+		 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
+		 <a href="#" id="braunschweig">goto bs</a>
+		 <!--
 		 <a href="#" id="test">test</a> - 
 		 <a href="#" id="showLocationPanel">Locations</a> - 
 		 <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
@@ -310,9 +309,10 @@
 		 - <a href="#" id="braunschweig">goto bs</a>
 		 <input type="checkbox" id="toggleLog" class="toggle_log"/><label for="toggleLog">show log</label>
 		 <input type="checkbox" id="toggleMeasure" class="toggle_tools" /><label for="toggleMeasure">measure</label>
+		 -->
 		 <div id="zoom" style="position: absolute; right: 10px;"></div>
 
-    <div id="drawing_tools">
+    <div id="drawing_tools" style="display: none;">
                 <input type="radio" name="type" value="none" id="noneDrawToggle"
                        onclick="toggleDrawControl(this);" checked="checked" />
                 <label for="noneDrawToggle">navigate</label>
