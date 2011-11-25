@@ -103,6 +103,10 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 										fillColor: "#3399ff"
 								})
 						}), //stylemap end
+						eventListeners: {
+								'featureselected': onFeatureSelect,
+								'featureunselected': onFeatureUnselect
+						},
 				}, options);
 
         var newArguments = [name, options];

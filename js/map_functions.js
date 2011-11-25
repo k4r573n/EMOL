@@ -78,11 +78,6 @@ function init_map() {
 	map.setLayerIndex(wheelLayer, 0); //to render this layer on bottom
 
 
-	wheelLayer.events.on({
-				'featureselected': onFeatureSelect,
-				'featureunselected': onFeatureUnselect
-	});
-
 	drawControls = {
 			select: new OpenLayers.Control.SelectFeature(
 					wheelLayer,
