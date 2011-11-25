@@ -11,7 +11,7 @@
 
 //Initialise the 'map' object
 function init_map() {
-	var root = "http://hitchwiki.org/";
+	var root = "http://bastler.bplaced.net/osm/";
 
     map = new OpenLayers.Map ("map", {
 
@@ -71,7 +71,10 @@ function init_map() {
 	map.addLayer(objectsLayer);
 	map.setLayerIndex(objectsLayer, 1); //to render this layer on bottom
 
-	//
+	// adding organic overlay
+	organic_layer = new OpenLayers.Layer.Vector.Organic("Organic/second_hand POIs");
+	map.addLayer(organic_layer);
+	map.setLayerIndex(organic_layer, 2); //to render this layer on bottom
 	// adding accessibillity overlay
 	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
 	map.addLayer(wheelLayer);
@@ -79,27 +82,18 @@ function init_map() {
 
 
 	drawControls = {
-			select: new OpenLayers.Control.SelectFeature(
+			select_wheel: new OpenLayers.Control.SelectFeature(
 					wheelLayer,
 					{
 						clickout: false
 					}
-		//			),
-		//	hover: new OpenLayers.Control.SelectFeature(
-		//			wheelLayer, 
-		//			{
-		//					hover: true,
-		//					highlightOnly: true,
-		//					renderIntent: "temporary",
-		//					//eventListeners: {
-		//					//		beforefeaturehighlighted: report,
-		//					//		featurehighlighted: report,
-		//					//		featureunhighlighted: report
-		//					//}
-		//			}
-		//		
-			//),
-			)
+			),
+			select_organic: new OpenLayers.Control.SelectFeature(
+					organic_layer,
+					{
+						clickout: false
+					}
+			),
 	};
 	
 	for(var key in drawControls) {

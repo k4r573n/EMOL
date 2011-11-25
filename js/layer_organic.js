@@ -42,8 +42,7 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 								params: 
 								{
 									who: "k4", 
-									k:"organic",
-									k:"second_hand"
+									k:"organic,second_hand"
 								},
 								format: new OpenLayers.Format.GeoJSON()
 						}),
@@ -53,7 +52,7 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 						styleMap: new OpenLayers.StyleMap({
 								"default": new OpenLayers.Style({
 										//externalGraphic: "${getIcon}",
-										fillColor: "#ffff00"
+										fillColor: "#ffff00",
 										pointRadius: 10,
 										graphicWidth:"32",//"${getSize}",
 										graphicHeight:"32",//"${getSize}",
@@ -70,13 +69,13 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 //															(feature.attributes["v"] == "only"))
 //															return "./img/wheelchair/wheelchair_" + feature.attributes["v"] + ".png";
 //														else
-//															return "./img/wheelchair/wheelchair_unknown.png";
+															return "./img/wheelchair/wheelchair_unknown.png";
 											}
 									 }
 								}),
 								"select": new OpenLayers.Style({
 										//externalGraphic: null,
-										fillColor: "#00ff00"
+										fillColor: "#00ff00",
 										graphicOpacity:1,
 										graphicZIndex: 1,
 										graphicWidth: 48,
@@ -87,6 +86,10 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 										fillColor: "#3399ff"
 								})
 						}), //stylemap end
+						eventListeners: {
+								'featureselected': onFeatureSelect,
+								'featureunselected': onFeatureUnselect
+						},
 				}, options);
 
         var newArguments = [name, options];

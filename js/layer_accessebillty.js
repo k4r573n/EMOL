@@ -1,15 +1,4 @@
-/* der layer für die Hitch Api */
-
-	//irgendeinen hüpschen styl 
-	var colors = [    
-							"#ffffff", // rate 0 (white)
-							"#00ad00", // rate 1 (green)
-							"#96ad00", // rate 2
-							"#ffff00", // rate 3
-							"#ff8d00", // rate 4
-							"#ff0000"  // rate 5 (red)
-					];
-
+/* Layers for accessebillity */
 
 /**
  * Class: OpenLayers.Layer.Vector.WheelChair
@@ -21,15 +10,6 @@
  *  - <OpenLayers.Layer.Vector>
  */
 OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
-    /** 
-     * APIProperty: style
-     * {Object} Default style for the layer
-     */
-    /**
-     * Property: strategies
-     * {Array(<OpenLayers.Strategy>)} Optional list of strategies for the layer.
-     */
-
 
     /**
      * Constructor: OpenLayers.Layer.HitchSpots
@@ -41,7 +21,7 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
      *           the layer.
      *
      * Returns:
-     * {<OpenLayers.Layer.HitchSpots>} A new vector layer
+     * {<OpenLayers.Layer.Vector.Wheelchair>} A new vector layer
      */
     initialize: function(name, options) {
 
