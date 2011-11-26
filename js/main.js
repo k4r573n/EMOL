@@ -18,6 +18,7 @@ var map, //complex object of type OpenLayers.Map
 	organic_layer, //for organic, second_hand etc tags
 	search_markers, //layer for search result markers
 	drawControls, //control elements
+	measureControls, 
 	wheelLayer; //wheelchair pois
 // Missing tiles from the map
 OpenLayers.Util.onImageLoadError = function(){this.src='img/tile_not_found.gif';}

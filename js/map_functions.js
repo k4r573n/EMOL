@@ -31,6 +31,75 @@ function init_map() {
         ]
     } );
 
+	 // Measure controls
+	 // http://openlayers.org/dev/examples/measure.html 
+		
+	 // style the sketch fancy
+		var sketchSymbolizers = {
+				"Point": {
+						pointRadius: 4,
+						graphicName: "square",
+						fillColor: "white",
+						fillOpacity: 1,
+						strokeWidth: 1,
+						strokeOpacity: 1,
+						strokeColor: "#333"
+				},
+				"Line": {
+						strokeWidth: 3,
+						strokeOpacity: 1,
+						strokeColor: "#333",
+						strokeDashstyle: "dash"
+				},
+				"Polygon": {
+						strokeWidth: 2,
+						strokeOpacity: 1,
+						strokeColor: "#666",
+						fillColor: "white",
+						fillOpacity: 0.3
+				}
+		};
+
+		var style = new OpenLayers.Style();
+		style.addRules([
+				new OpenLayers.Rule({symbolizer: sketchSymbolizers})
+		]);
+		var styleMap = new OpenLayers.StyleMap({"default": style});
+		
+		measureControls = {
+				line: new OpenLayers.Control.Measure(
+						OpenLayers.Handler.Path, {
+								persist: true,
+								handlerOptions: {
+										layerOptions: {styleMap: styleMap}
+								}
+						}
+				),
+				polygon: new OpenLayers.Control.Measure(
+						OpenLayers.Handler.Polygon, {
+								persist: true,
+								handlerOptions: {
+										layerOptions: {styleMap: styleMap}
+								}
+						}
+				)
+		};
+		
+		var control;
+		for(var key in measureControls) {
+				control = measureControls[key];
+				control.geodesic = true;//take this away if you want to make geodesic optional
+				control.setImmediate(true);
+				control.events.on({
+						"measure": handleMeasurements,
+						"measurepartial": handleMeasurements
+				});
+				map.addControl(control);
+		}
+
+		document.getElementById('noneToggle').checked = true;
+	 // END Measure controls
+
 
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
     //layerMapnik.setOpacity(0.4);
@@ -158,6 +227,32 @@ function onFeatureUnselect(evt) {
 	feature = evt.feature;
 	$("#counter").text(this.selectedFeatures.length);
 	//alert("tschüss "+ this.selectedFeatures.length);
+}
+
+function handleMeasurements(event) {
+		var geometry = event.geometry;
+		var units = event.units;
+		var order = event.order;
+		var measure = event.measure;
+		var element = document.getElementById('output');
+		var out = "";
+		if(order == 1) {
+				out += "measure: " + measure.toFixed(3) + " " + units;
+		} else {
+				out += "measure: " + measure.toFixed(3) + " " + units + "<sup>2</" + "sup>";
+		}
+		element.innerHTML = out;
+}
+
+function toggleMeasureControl(element) {
+		for(key in measureControls) {
+				var control = measureControls[key];
+				if(element.value == key && element.checked) {
+						control.activate();
+				} else {
+						control.deactivate();
+				}
+		}
 }
 
 /**
