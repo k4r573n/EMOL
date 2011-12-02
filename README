@@ -1,19 +1,44 @@
+**************************************
+*****	EMOL - Easy Map OverLays  ******
+**************************************
+
+The aim of this Project is go generate or better combine
+well known tools to a toolbox for own browser Maps.
+
+In my Opinon it costs too mutch time to set up databases
+and write scripts to access them. Therefor this is my
+solution:
+
+Featurs:
+- install scripts to install it on a free hoster (to be completed)
+- Makefile to automaticly download raw data, filter and import
+	them into the database
+- featurerich example map to start with lots of possibilties
+- layer-objects - easy to copy and modify
+- a free accessable API wich use my database (works with JSONP)
+
+Documentation:
+- comming soon ;)
+- a API description can be found in ./server_side/api/apidoc.html
+- I hope you can follow my comments in the source files
+
+Sources:
+- Hitchhiking Map http://hitchwiki.org/maps/#
+- OLM http://wiki.openstreetmap.org/wiki/DE:OpenLinkMap
 
 
+Used Libs and other material:
+- http://openlayers.org/
+- http://www.peterrobins.co.uk/it/ol.html   <-- (Good OL Introduction!)
+- http://www.peterrobins.co.uk/it/olchangingprojection.html
+- http://openflights.org/blog/2009/10/21/customized-openlayers-cluster-strategies/
+- http://docs.jquery.com/
+- http://jqueryui.com/
+- http://plugins.jquery.com/project/ScrollTo
+- http://openlayers.org/
+- http://www.giantflyingsaucer.com/blog/?p=2682
 
-this might allow you to set, describe and save points
-and use the measure tools
-
-to plan the next walking trip
-
-Todo:
-impement text field to enter describtions to each feature
-on the right handside like in the hitchhiking map
-(use jquery)
-
-Links:
-http://docs.jquery.com/
-http://jqueryui.com/
-http://plugins.jquery.com/project/ScrollTo
-http://openlayers.org/
-http://www.giantflyingsaucer.com/blog/?p=2682
+Comment:
+Thanks a lot to HitchWiki Maps and OLM which are the basis for this
+Project! Without them it wouldn't exists. I hope this can help you
+like they helped me - good luck!
