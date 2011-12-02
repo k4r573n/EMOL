@@ -143,16 +143,32 @@ if(isset($_GET['id']))
 
 	$keys = explode(',',$_GET['filter']);
 	$filter = "(";
-	foreach ($keys as $value) {
-		$filter .= "t.k = '$value' OR ";
+	//generate Filter from parameters
+	foreach ($keys as $value)
+ 	{
+		//extract key and value
+		$kv = explode('=',$value);
+		if (($kv == 1)||($kv[1] == '*'))
+		{
+			//only key is given
+			$filter .= "t.k = '".$kv[0]."' OR ";
+		}else{
+			//key and value is given
+			$filter .= "(t.k = '".$kv[0]."' AND t.v = '".$kv[1]."') OR ";
+		}
 	}
-	if ($filter == "(") $filter = "t.k = 'wheelchair' "; //default filter
-	else $filter = substr($filter,0,strlen($filter)-4) . ")";
-	//echo "filter:".$filter."<br>";
+	if ($filter != "(")
+	{
+		$filter = substr($filter,0,strlen($filter)-4) . ")";
+		//echo "filter:".$filter."<br>";
 
-	if (connect($hostname, $db_user, $db_password, $database_name)) {
-		$feature_collection = getFeatures($filter, $bbox);
-		echo $_GET['callback']. '(' . json_encode($feature_collection) . ');';
+		if (connect($hostname, $db_user, $db_password, $database_name)) {
+			$feature_collection = getFeatures($filter, $bbox);
+			echo $_GET['callback']. '(' . json_encode($feature_collection) . ');';
+		}
+	}else{
+	 	//no filter is given
+		echo $_GET['callback']. '(error: "no filter given" );';
 	}
 }
 
