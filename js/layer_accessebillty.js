@@ -37,7 +37,7 @@ OpenLayers.Layer.Vector.WheelChair = OpenLayers.Class(OpenLayers.Layer.Vector, {
 						],
 						protocol: 
 						new OpenLayers.Protocol.Script({
-								url: "http://bastler.bplaced.net/osm/api_tests.php",
+								url: "http://bastler.bplaced.net/osm/api",
 								params: 
 								{
 									who: "k4", 

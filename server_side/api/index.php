@@ -148,7 +148,7 @@ if(isset($_GET['id']))
  	{
 		//extract key and value
 		$kv = explode('=',$value);
-		if (($kv == 1)||($kv[1] == '*'))
+		if ((count($kv) == 1)||($kv[1] == '*'))
 		{
 			//only key is given
 			$filter .= "t.k = '".$kv[0]."' OR ";
