@@ -1,6 +1,8 @@
-**************************************
-*****	EMOL - Easy Map OverLays  ******
-**************************************
+********************************************************
+*****	         EMOL - Easy Map OverLays           ******
+********************************************************
+a project by Karsten Hinz <k.hinz@tu-bs.de> 
+started in 2011
 
 The aim of this Project is go generate or better combine
 well known tools to a toolbox for own browser Maps.
@@ -13,9 +15,10 @@ Featurs:
 - install scripts to install it on a free hoster (to be completed)
 - Makefile to automaticly download raw data, filter and import
 	them into the database
-- featurerich example map to start with lots of possibilties
+- feature rich example map to start with lots of possibilties
 - layer-objects - easy to copy and modify
 - a free accessable API wich use my database (works with JSONP)
+  http://bastler.bplaced.net/osm/api
 
 Documentation:
 - comming soon ;)
