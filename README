@@ -16,6 +16,7 @@ Featurs:
 - Makefile to automaticly download raw data, filter and import
 	them into the database
 - feature rich example map to start with lots of possibilties
+  http://bastler.bplaced.net/osm/emol
 - layer-objects - easy to copy and modify
 - a free accessable API wich use my database (works with JSONP)
   http://bastler.bplaced.net/osm/api
