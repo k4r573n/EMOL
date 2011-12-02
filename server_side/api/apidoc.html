@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>Api Documentation</title>
+</head>
+<body>
+This Documentation is valid for API commit at 2.12.2011
+
+<h1>API:</h1>
+http://bastler.bplaced.net/osm/api
+
+<h2>List Pois</h2>
+
+<h3>Nessesary Parameters</h3>
+		<b>bbox</b>=&lt;x-min&gt;&lt;y-min&gt;&lt;x-max&gt;&lt;y-max&gt;<br>
+		it's a filter for an area specified by the bounding box
+
+	<h3>Optional Parameters</h3>
+	<p>
+		<b>filter</b>='&lt;key&gt;=&lt;value&gt;,&lt;key&gt;=&lt;value&gt;,...'<br>
+		<b>filter</b>=&lt;key&gt;,&lt;key&gt;,...<br>
+		<b>filter</b>='&lt;key&gt;,&lt;key&gt;=&lt;value&gt;,...'<br>
+		finds only entries where one of this key=value pairs matches
+		</p><p>
+		<b>who</b>=&lt;email&gt;<br>
+		an email address that I know who is using this API (its possible that I inform you on API changes)<br>
+		</p>
+<h2>Get POI Details</h2>
+
+	<h3>Nessesary Parameters</h3>
+	<p>
+		<b>id</b>=&lt;id&gt;<br>
+		the ID is the OSM object ID. Returns all Information of this Object stored in OSM (except history)
+		</p>
+</body>
