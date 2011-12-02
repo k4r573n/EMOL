@@ -4,14 +4,24 @@
 //http://www.bjw.co.nz/developer/php/62-php-unzip-an-uploaded-file-using-php
 
 $zip = new ZipArchive;
-$res = $zip->open(’my_zip_file.zip’);
+$dir = "temp/";
+if(isset($_GET['dir']))
+	$dir = $_GET['dir'];
 
-if ($res === TRUE) {
-	$zip->extractTo(’my_extract_to_dir/’);
-	$zip->close();
-	echo ‘ok’;
-} else {
-	echo ‘failed’;
+if(isset($_GET['file']))
+{
+	$file = $_GET['file'];
+	$res = $zip->open($file);
+
+	if ($res === TRUE) {
+		$zip->extractTo($dir);
+		$zip->close();
+		echo "extraction $file to $dir succeded";
+	} else {
+		echo "extraction $file to $dir FAILED";
+	}
+}else{
+	echo "no file specified use ?file=<file>&dir=<extract directory>";
 }
 
 ?> 
