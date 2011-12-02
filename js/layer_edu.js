@@ -28,21 +28,21 @@ OpenLayers.Layer.Vector.Edu = OpenLayers.Class(OpenLayers.Layer.Vector, {
 
         options = OpenLayers.Util.extend({
 						projection: proj4326,
-						maxResolution: 14160.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
+						maxResolution: 160.0,//wichtig - sonst gibts ne falsche bbox - stellt ein ab wann die api abgefragt wird
 						visibility: true,
 						transitionEffect: 'resize',
 						strategies: 
 						[
 							new OpenLayers.Strategy.BBOX({ratio: 1.5})
-							//new OpenLayers.Strategy.BBOX()
 						],
 						protocol: 
 						new OpenLayers.Protocol.Script({
-								url: "http://bastler.bplaced.net/osm/api_tests.php",
+								url: "http://bastler.bplaced.net/osm/api",
 								params: 
 								{
 									who: "k4", 
-									filter:"amenity=school,amenity=college"
+						//TODO check if this is working!
+									filter:"amenity=school,amenity=university,amenity=kindergarden,amenity=college"
 								},
 								format: new OpenLayers.Format.GeoJSON()
 						}),
@@ -52,10 +52,10 @@ OpenLayers.Layer.Vector.Edu = OpenLayers.Class(OpenLayers.Layer.Vector, {
 						styleMap: new OpenLayers.StyleMap({
 								"default": new OpenLayers.Style({
 										//externalGraphic: "${getIcon}",
-										fillColor: "#ffff00",
-										pointRadius: 10,
-										graphicWidth:"32",//"${getSize}",
-										graphicHeight:"32",//"${getSize}",
+										fillColor: "#aa0000",
+										pointRadius: 20,
+										//graphicWidth:"32",//"${getSize}",
+										//graphicHeight:"32",//"${getSize}",
 										graphicOpacity:0.70,
 										graphicZIndex: 0,
 										cursor: "pointer",
@@ -78,8 +78,8 @@ OpenLayers.Layer.Vector.Edu = OpenLayers.Class(OpenLayers.Layer.Vector, {
 										fillColor: "#00ff00",
 										graphicOpacity:1,
 										graphicZIndex: 1,
-										graphicWidth: 48,
-										graphicHeight: 48
+										//graphicWidth: 48,
+										//graphicHeight: 48
 								}),
 								"hover": new OpenLayers.Style({
 										graphicZIndex: 1,

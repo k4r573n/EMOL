@@ -16,6 +16,7 @@ var zoom=16;
 var map, //complex object of type OpenLayers.Map
 	objectsLayer, //hitchhiking spots
 	organic_layer, //for organic, second_hand etc tags
+	edu_layer, //for all education locations
 	search_markers, //layer for search result markers
 	drawControls, //control elements
 	measureControls, 

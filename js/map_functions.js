@@ -100,6 +100,8 @@ function init_map() {
 		document.getElementById('noneToggle').checked = true;
 	 // END Measure controls
 
+///////////////////////////////////////////////////////////////////////
+// Basic Layers
 
     layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
     //layerMapnik.setOpacity(0.4);
@@ -113,6 +115,13 @@ function init_map() {
 		map.addLayer(new OpenLayers.Layer.OSM("Public transport lines","http://openptmap.org/tiles/${z}/${x}/${y}.png",
 					{ maxZoomLevel: 17, numZoomLevels: 18, alpha: true, isBaseLayer: false, visibility: false }));
 
+// Basic Layers
+///////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
+// Overlays
+
+	/* Search Marker */
 	var styleMap = new OpenLayers.StyleMap({
 			pointRadius: 20,
 			fillColor: "#ff0000",
@@ -123,6 +132,7 @@ function init_map() {
 			graphicHeight: 48,
 			graphicTitle: "here we are"
 	});
+
 	//layer for search results
 	search_markers = new OpenLayers.Layer.Vector( "Search Results",
 			{
@@ -130,10 +140,8 @@ function init_map() {
 			});
 	map.addLayer(search_markers);
 	map.setLayerIndex(search_markers, 99); //to render this layer oon top
+	/* END - Search Marker */
 
-		///////////////////////////////////////////////////////////////////////////////7
-		//copyed from OLM objectlayer
-		///////////////////////////////////////////////////////////////////////////////7
 
 	// adding objects overlay
 	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots",{visibility:false});
@@ -144,12 +152,19 @@ function init_map() {
 	organic_layer = new OpenLayers.Layer.Vector.Organic("Organic/second_hand POIs");
 	map.addLayer(organic_layer);
 	map.setLayerIndex(organic_layer, 2); //to render this layer on bottom
+
+	// adding Education overlay
+	edu_layer = new OpenLayers.Layer.Vector.Edu("Education Layer");
+	map.addLayer(edu_layer);
+	map.setLayerIndex(edu_layer, 3); //to render this layer on bottom
+
 	// adding accessibillity overlay
 	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
 	map.addLayer(wheelLayer);
 	map.setLayerIndex(wheelLayer, 0); //to render this layer on bottom
 
 
+	/* controls for selectable Layers */
 	drawControls = {
 			select_wheel: new OpenLayers.Control.SelectFeature(
 					wheelLayer,
@@ -163,13 +178,22 @@ function init_map() {
 						clickout: false
 					}
 			),
+			select_edu: new OpenLayers.Control.SelectFeature(
+					edu_layer,
+					{
+						clickout: false
+					}
+			),
 	};
 	
 	for(var key in drawControls) {
 			map.addControl(drawControls[key]);
 			drawControls[key].activate();
 	}
+	/* END - controls for selectable Layers */
 
+// Overlays
+///////////////////////////////////////////////////////////////////////
 
 	//position in map
 	if( ! map.getCenter() ){
