@@ -58,7 +58,7 @@ OpenLayers.Layer.Vector.HitchSpots = OpenLayers.Class(OpenLayers.Layer.Vector, {
 						protocol: 
 						new OpenLayers.Protocol.Script({
 								//url: "http://hitchwiki.org/maps/api/",//Problem: api will bounds - OL fragt nach bbox
-								url: "http://127.0.0.1/api/api_hitchmap.php",
+								url: "http://127.0.0.1/xp/server_side/xp/server_side/api/api_hitchmap.php",
 								params: 
 								{
 									who: "k4", 
