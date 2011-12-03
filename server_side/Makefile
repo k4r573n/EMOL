@@ -5,6 +5,11 @@
 ###############################################
 
 #create a sql-file from an osm-file
+PROJECT = emol
+FRONTEND_SERVER = bastler.bplaced.net
+USER_FRONTEND_SERVER = bastler
+API_SERVER = bastler.bplaced.net
+USER_API_SERVER = bastler
 
 OSM_KEY = wheelchair
 OSM_VALUE = *
@@ -41,6 +46,7 @@ getNiedersachsen:
 	wget -O /tmp/nds.osm.bz2 http://download.geofabrik.de/osm/europe/germany/niedersachsen.osm.bz2
 	bzip2 -d /tmp/nds.osm.bz2
 
+
 convert:
 	osmosis --rx $(INPUT) --wmsd $(OUTPUT).sql
 
@@ -64,17 +70,26 @@ doWheelchair:
 
 input: $(INPUT)
 
-#Password has to be placed in File ./ftp_pw
+#Password has to be placed in File ./ftp_api_pw
 upload: 
-	ftp-upload --debug -h bastler.bplaced.net --passive --dir ./osm -u bastler --password-fd=3 3<./ftp_pw $(UPLOAD)
+	ftp-upload --debug -h $(API_SERVER) --passive --dir ./osm/upload/ \
+		-u $(USER_API_SERVER) --password-fd=3 3<./ftp_api_pw $(UPLOAD)
 
+#######################################################################
+## Upload frontend
+###################
 
-
-edit:
-	vim $(OSM_KEY).sql
-
-osm: $(INPUT)
-	josm $(INPUT)
+#first zip all files of project for upload
+#Password has to be placed in File ./ftp_frontend_pw
+upload_project:
+	cd .. && zip $(PROJECT).zip js/*.js js/img/* \
+		js/theme/default/style.css img/* README index.htm -r css/*
+	ftp-upload --debug -h $(FRONTEND_SERVER) --passive --dir ./osm/upload/ \
+		-u $(USER_FRONTEND_SERVER) --password-fd=3 3<./ftp_frontend_pw ../$(PROJECT).zip
+	rm ../$(PROJECT).zip
+	wget -O status "http://$(FRONTEND_SERVER)/osm/upload/unzipfile.php?file=$(PROJECT).zip&dir=../$(PROJECT)"
+	cat status
+	rm status
 
 clean:
 	rm *.sql
