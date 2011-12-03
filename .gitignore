@@ -1,2 +1,3 @@
 server_side/api/mysql.config
-server_side/ftp_pw
+server_side/ftp_api_pw
+server_side/ftp_frontend_pw

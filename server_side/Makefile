@@ -88,6 +88,7 @@ upload_project:
 		-u $(USER_FRONTEND_SERVER) --password-fd=3 3<./ftp_frontend_pw ../$(PROJECT).zip
 	rm ../$(PROJECT).zip
 	wget -O status "http://$(FRONTEND_SERVER)/osm/upload/unzipfile.php?file=$(PROJECT).zip&dir=../$(PROJECT)"
+	echo "rückgabe:"
 	cat status
 	rm status
 
