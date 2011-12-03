@@ -83,7 +83,7 @@ upload:
 #Password has to be placed in File ./ftp_frontend_pw
 upload_project:
 	cd .. && zip $(PROJECT).zip js/*.js js/img/* \
-		js/theme/default/style.css img/* README index.htm -r css/*
+		js/theme/default/style.css style.css img/* README index.htm -r css/*
 	ftp-upload --debug -h $(FRONTEND_SERVER) --passive --dir ./osm/upload/ \
 		-u $(USER_FRONTEND_SERVER) --password-fd=3 3<./ftp_frontend_pw ../$(PROJECT).zip
 	rm ../$(PROJECT).zip
