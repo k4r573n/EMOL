@@ -41,6 +41,8 @@ Used Libs and other material:
 - http://plugins.jquery.com/project/ScrollTo
 - http://openlayers.org/
 - http://www.giantflyingsaucer.com/blog/?p=2682
+- http://wiki.openstreetmap.org/wiki/Osmosis
+- http://svn.openstreetmap.org/applications/utils/osmosis/plugins/mysql_simple/
 
 Comment:
 Thanks a lot to HitchWiki Maps and OLM which are the basis for this
