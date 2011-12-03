@@ -286,4 +286,30 @@ function addNodeDetails(data) {
 	$.each(data.attributs, function(key, value) {
 		$("#describtion").append("<b>"+value.k + " :</b> "+ value.v + "<br>");
 	});
+	$("#describtion").append('<br><b>Edit:</b> <a href="javascript:josm_call_for_point(' +
+		data.lon + ',' + data.lat + ');">JOSM</a><br>');
 }
+
+function josm_call_for_area() {
+	left = x2lon( map.getExtent().left ).toFixed(5);
+	right = x2lon( map.getExtent().right ).toFixed(5);
+	// conflict with use of variable 'top' in internet explorer. (why?) use my_top instead. gw
+	my_top = y2lat( map.getExtent().top ).toFixed(5);
+	bottom = y2lat( map.getExtent().bottom ).toFixed(5);
+	baseUrl = 'http://127.0.0.1:8111/load_and_zoom?left='+left+'&right='+right+'&top='+my_top+'&bottom='+bottom;
+	// IE 9 + localhost ajax GEHT NICHT, daher Fallback:
+	//window.open (baseUrl);
+	document.getElementById('josm_call_iframe').src=baseUrl;
+} 
+
+function josm_call_for_point(lon,lat) {
+	left = lon - 0.0006;
+	right = lon + 0.0006;
+	// conflict with use of variable 'top' in internet explorer. (why?) use my_top instead. gw
+	my_top = lat + 0.0003;
+	bottom = lat - 0.0003;
+	baseUrl = 'http://127.0.0.1:8111/load_and_zoom?left='+left+'&right='+right+'&top='+my_top+'&bottom='+bottom;
+	// IE 9 + localhost ajax GEHT NICHT, daher Fallback:
+	//window.open (baseUrl);
+	document.getElementById('josm_call_iframe').src=baseUrl;
+} 
