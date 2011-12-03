@@ -14,13 +14,10 @@ var lat=52.284; var lon=10.52; //BS
 var zoom=16;
 
 var map, //complex object of type OpenLayers.Map
-	objectsLayer, //hitchhiking spots
-	organic_layer, //for organic, second_hand etc tags
 	edu_layer, //for all education locations
 	search_markers, //layer for search result markers
 	drawControls, //control elements
-	measureControls, 
-	wheelLayer; //wheelchair pois
+	measureControls;
 // Missing tiles from the map
 OpenLayers.Util.onImageLoadError = function(){this.src='img/tile_not_found.gif';}
 OpenLayers.Tile.Image.useBlankTile=false; 

@@ -143,41 +143,14 @@ function init_map() {
 	/* END - Search Marker */
 
 
-	// adding objects overlay
-	objectsLayer = new OpenLayers.Layer.Vector.HitchSpots("Hitchhiking Spots",{visibility:false});
-	map.addLayer(objectsLayer);
-	map.setLayerIndex(objectsLayer, 1); //to render this layer on bottom
-
-	// adding organic overlay
-	organic_layer = new OpenLayers.Layer.Vector.Organic("Organic/second_hand POIs");
-	map.addLayer(organic_layer);
-	map.setLayerIndex(organic_layer, 2); //to render this layer on bottom
-
 	// adding Education overlay
 	edu_layer = new OpenLayers.Layer.Vector.Edu("Education Layer");
 	map.addLayer(edu_layer);
 	map.setLayerIndex(edu_layer, 3); //to render this layer on bottom
 
-	// adding accessibillity overlay
-	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
-	map.addLayer(wheelLayer);
-	map.setLayerIndex(wheelLayer, 0); //to render this layer on bottom
-
 
 	/* controls for selectable Layers */
 	drawControls = {
-			select_wheel: new OpenLayers.Control.SelectFeature(
-					wheelLayer,
-					{
-						clickout: false
-					}
-			),
-			select_organic: new OpenLayers.Control.SelectFeature(
-					organic_layer,
-					{
-						clickout: false
-					}
-			),
 			select_edu: new OpenLayers.Control.SelectFeature(
 					edu_layer,
 					{

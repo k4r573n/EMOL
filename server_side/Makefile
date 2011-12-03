@@ -5,7 +5,7 @@
 ###############################################
 
 #create a sql-file from an osm-file
-PROJECT = emol
+PROJECT = bildungsatlas
 FRONTEND_SERVER = bastler.bplaced.net
 USER_FRONTEND_SERVER = bastler
 API_SERVER = bastler.bplaced.net
