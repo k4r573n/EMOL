@@ -93,6 +93,18 @@ upload:
 	cat status
 	rm status
 
+applyUpload:
+	echo "clear DB"
+	wget -O status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=clear_all_tables.sql"
+	echo "rückgabe:"
+	cat status
+	rm status
+	echo "fill DB"
+	wget -O status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=./upload/upload.sql"
+	echo "rückgabe:"
+	cat status
+	rm status
+
 #######################################################################
 ## Upload frontend
 ###################
