@@ -42,7 +42,7 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 								params: 
 								{
 									who: "k4", 
-									filter:"organic,second_hand"
+									filter:"organic,second_hand,shop=organic"
 								},
 								format: new OpenLayers.Format.GeoJSON()
 						}),
