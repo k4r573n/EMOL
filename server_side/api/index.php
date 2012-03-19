@@ -4,7 +4,8 @@
  * http://stackoverflow.com/questions/6591947/make-my-json-string-parsed-openlayers-format-geojson
  *
  */
-include "../mysql.config";
+//include "../.mysql.config";
+include "./.mysql.config";
 
 class PoiDetails
 {

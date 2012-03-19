@@ -98,11 +98,11 @@ input: $(INPUT)
 
 
 #first zip sql-file upload
-#Password has to be placed in File ./ftp_api_pw
+#Password has to be placed in File ./.ftp_api_pw
 upload: 
 	zip upload.zip $(UPLOAD)
 	ftp-upload --debug -h $(API_SERVER) --passive --dir ./osm/upload/ \
-		-u $(USER_API_SERVER) --password-fd=3 3<./ftp_api_pw upload.zip
+		-u $(USER_API_SERVER) --password-fd=3 3<./.ftp_api_pw upload.zip
 	rm upload.zip
 	wget -O status "http://$(FRONTEND_SERVER)/osm/upload/unzipfile.php?file=upload.zip&dir=./"
 	echo "rückgabe:"
@@ -140,12 +140,12 @@ cleanDB:
 ###################
 
 #first zip all files of project for upload
-#Password has to be placed in File ./ftp_frontend_pw
+#Password has to be placed in File ./.ftp_frontend_pw
 upload_project:
 	cd .. && zip $(PROJECT).zip js/*.js js/img/* \
 		js/theme/default/style.css style.css img/* README index.htm -r css/*
 	ftp-upload --debug -h $(FRONTEND_SERVER) --passive --dir ./osm/upload/ \
-		-u $(USER_FRONTEND_SERVER) --password-fd=3 3<./ftp_frontend_pw ../$(PROJECT).zip
+		-u $(USER_FRONTEND_SERVER) --password-fd=3 3<./.ftp_frontend_pw ../$(PROJECT).zip
 	rm ../$(PROJECT).zip
 	wget -O status "http://$(FRONTEND_SERVER)/osm/upload/unzipfile.php?file=$(PROJECT).zip&dir=../$(PROJECT)"
 	echo "rückgabe:"
