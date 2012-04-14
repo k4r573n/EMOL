@@ -279,10 +279,8 @@
 		 <span id="last_update_db"><?php include "../config/last_db_update.php" ?></span>
 		 <br>
 		 <b>Last Update Frontend: </b>
-		 <span id="last_update_fe">$$last_frontend_update$$</span>
+		 <span id="last_update_fe"><?php include 'last_update.php'; ?></span>
 		 <br>
-		 <b>Last Update Code: </b>
-		 <span id="last_update_cd">maybe Today^^ see code</span>
 		 <hr>
 		 <h3 style="margin: 1px 0px 2px;">Infos:</h3>
 		 comming soon<br>
