@@ -1,3 +1,5 @@
 server_side/api/mysql.config
 server_side/ftp_api_pw
 server_side/ftp_frontend_pw
+frontend/last_update.php
+*.swp

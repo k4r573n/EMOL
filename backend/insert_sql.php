@@ -6,21 +6,13 @@
  * !!! untested !!!
  *
  */
+include "config/.mysql.config.php";
 
 // SQL File
 $SQLFile = 'upload.sql';
+if(isset($_GET['file'])) 
+	$SQLFile = $_GET['file'];
 
-// Server Name
-$hostname = 'localhost';
-
-// User Name
-$db_user = 'bastler_my-osm';
-
-// User Password
-$db_password = 'p0o9i8u7z6t5r4e3w2q';
-
-// DBName
-$database_name = 'bastler_my-osm';
 
 // Connect MySQL
 $link = mysql_connect($hostname, $db_user, $db_password);

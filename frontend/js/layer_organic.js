@@ -42,7 +42,7 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 								params: 
 								{
 									who: "k4", 
-									filter:"organic,second_hand"
+									filter:"organic,second_hand,shop=organic,shop=second_hand"
 								},
 								format: new OpenLayers.Format.GeoJSON()
 						}),
@@ -51,12 +51,12 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 					  },
 						styleMap: new OpenLayers.StyleMap({
 								"default": new OpenLayers.Style({
-										//externalGraphic: "${getIcon}",
+										externalGraphic: "${getIcon}",
 										fillColor: "#ffff00",
 										pointRadius: 10,
-										graphicWidth:"32",//"${getSize}",
-										graphicHeight:"32",//"${getSize}",
-										graphicOpacity:0.70,
+										graphicWidth:"48",//"${getSize}",
+										graphicHeight:"48",//"${getSize}",
+										graphicOpacity:0.90,
 										graphicZIndex: 0,
 										cursor: "pointer",
 								},
@@ -64,12 +64,22 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 									 context: 
 									 {
 											getIcon: function(feature) {
-//													 if((feature.attributes["v"] == "yes")||
-//															(feature.attributes["v"] == "no")||
-//															(feature.attributes["v"] == "only"))
-//															return "./img/wheelchair/wheelchair_" + feature.attributes["v"] + ".png";
-//														else
-															return "./img/wheelchair/wheelchair_unknown.png";
+													 if((feature.attributes["k"] == "organic")&&(feature.attributes["v"] == "yes"))
+															return "./img/icons/organic2_48px.png";
+													 else if((feature.attributes["k"] == "organic")&&(feature.attributes["v"] == "only"))
+															return "./img/icons/organic2_48px.png";
+													 else if((feature.attributes["k"] == "second_hand")&&(feature.attributes["v"] == "yes"))
+															return "./img/icons/second_hand2_48px.png";
+													 else if((feature.attributes["k"] == "second_hand")&&(feature.attributes["v"] == "only"))
+															return "./img/icons/second_hand2_48px.png";
+													 //deprecated
+													 else if((feature.attributes["k"] == "shop")&&(feature.attributes["v"] == "organic"))
+															return "./img/icons/bug_48px.png";
+													 // still ok (see wiki)
+													else if((feature.attributes["k"] == "shop")&&(feature.attributes["v"] == "second_hand"))
+															return "./img/icons/second_hand2_48px.png";
+													 else
+															return "./img/icons/question_48px.png";
 											}
 									 }
 								}),

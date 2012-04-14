@@ -1,7 +1,13 @@
 <html>
 <head>
-   <title>OSM Local Tiles</title>
-   <link rel="stylesheet" href="style.css" type="text/css" />
+   <title>EASY Map Overlays - Demo</title>
+	 <meta name="robots" content="nofollow">. 
+	 <meta name="author" content="Karsten Hinz">
+	 <meta name="description" content="This is a demonstration how to use it.">
+   <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map">
+	 <meta name="date" content="<?php include 'last_update.php'; ?>">
+
+	 <link rel="stylesheet" href="css/style.css" type="text/css" />
    <!-- bring in the OpenLayers javascript library
         (here we bring it from the remote site, but you could
         easily serve up this javascript yourself) -->
@@ -266,10 +272,11 @@
 		 z.Z. sind nur POIs aus niedersachsen Importiert
 		 <hr>
 		 <b>Last Update Database: </b>
-		 <span id="last_update">22.11.11</span>
+		 <span id="last_update_db"><?php include "../config/last_db_update.php" ?></span>
 		 <br>
-		 <b>Last Update Code: </b>
-		 <span id="last_update">Today^^</span>
+		 <b>Last Update Frontend: </b>
+		 <span id="last_update_fe"><?php include 'last_update.php'; ?></span>
+		 <br>
 		 <hr>
 		 <h3 style="margin: 1px 0px 2px;">Infos:</h3>
 		 comming soon<br>
