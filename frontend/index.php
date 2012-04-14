@@ -3,7 +3,7 @@
    <title>EASY Map Overlays - Demo</title>
 	 <meta name="robots" content="nofollow">. 
 	 <meta name="author" content="Karsten Hinz">
-	 <meta name="description" content="This is a demonstration how to use it.">
+	 <meta name="description" content="This should become a map with lots of different education facilitys.">
    <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map">
 	 <meta name="date" content="<?php include 'last_update.php'; ?>">
 
