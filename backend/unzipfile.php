@@ -10,7 +10,7 @@ if(isset($_GET['dir']))
 
 if(isset($_GET['file']))
 {
-	$file = $_GET['file'];
+	$file = "upload/".$_GET['file'];
 	$res = $zip->open($file);
 
 	if ($res === TRUE) {

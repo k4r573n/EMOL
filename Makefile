@@ -6,8 +6,10 @@
 
 #create a sql-file from an osm-file
 PROJECT = emol
+
 FRONTEND_SERVER = bastler.bplaced.net
 USER_FRONTEND_SERVER = bastler
+
 API_SERVER = bastler.bplaced.net
 USER_API_SERVER = bastler
 
@@ -16,6 +18,9 @@ OSM_VALUE = *
 INPUT = $(OSM_KEY).osm
 OUTPUT = upload
 UPLOAD = upload.sql
+
+#ablsolute path!!! without terminating '/'
+TMP_DIR = $(shell readlink -m tmp/)
 
 ##location
 LEFT = 10.492
@@ -29,88 +34,100 @@ TOP = 52.4801
 
 TODAY = $(shell date +%Y_%m_%d)
 
-OLD_DATA = filtered_11_11_27.osm
-NEW_DATA = filtered.osm
+OLD_DATA = $(TMP_DIR)/filtered_11_11_27.osm
+NEW_DATA = $(TMP_DIR)/filtered.osm
 
 KEYLIST = wheelchair,tactile_paving,traffic_signals:sound,information,description:de:blind,amenity,leisure,blind:website:de,blind:audio:de,organic,shop
 
 #alle meist genutzten ausgaben generieren
 #getNiedersachsen
 all: 
-	make filter INPUT=nds.osm.pbf
-	make convert INPUT=filtered.osm
+	make filter INPUT=$(TMP_DIR)/nds.osm.pbf
+	make convert INPUT=$(TMP_DIR)/filtered.osm
 	#make upload UPLOAD=$(OUTPUT).sql
 
+#experimental - not ready to work
 incUpdate:
-	make filter INPUT=nds.osm.pbf
+	make filter INPUT=$(TMP_DIR)/nds.osm.pbf
 	sleep 2
-	make createDiff OLD_DATA=$(shell ls filtered_*.osm | tail -n 2 | head -n 1)
+	make createDiff OLD_DATA=$(shell ls $(TMP_DIR)/filtered_*.osm | tail -n 2 | head -n 1)
 	sleep 2
 	make upload UPLOAD=update_diff.sql
 	sleep 2
 	make applyUpload UPLOAD=update_diff.sql
 
-$(INPUT):
-	wget -O "$(INPUT)" "http://open.mapquestapi.com/xapi/api/0.6/node[$(OSM_KEY)=$(OSM_VALUE)][bbox=$(LEFT),$(BOTTOM),$(RIGHT),$(TOP)]"
-		#wget -O "$(INPUT)" "http://jxapi.openstreetmap.org/xapi/api/0.6/*[$(OSM_KEY)=$(OSM_VALUE)][bbox=$(LEFT),$(BOTTOM),$(RIGHT),$(TOP)]"
-#oder http://osmxapi.hypercube.telascience.org/api/0.6/*[amenity=shop][bbox=10.492,52.254,10.5551,52.2801]
-#oder wget -O "$(INPUT)" "http://www.informationfreeway.org/api/0.6/*[$(OSM_KEY)=$(OSM_VALUE)][bbox=$(LEFT),$(BOTTOM),$(RIGHT),$(TOP)]"
+#clears the whole database and fills ist with new data
+database_overwrite:
+	make filter INPUT=$(TMP_DIR)/nds.osm.pbf
+	sleep 2
+	make filterAndConvert INPUT=$(TMP_DIR)/filtered.osm
+	sleep 2
+	make upload
+	sleep 2
+	make cleanDB
+	sleep 2
+	make applyUpload
 
 
 getNiedersachsen:
-	wget -O nds_$(TODAY).osm.pbf http://download.geofabrik.de/osm/europe/germany/niedersachsen.osm.pbf
-	ln -sf nds_$(TODAY).osm.pbf nds.osm.pbf
+	wget -O $(TMP_DIR)/nds_$(TODAY).osm.pbf http://download.geofabrik.de/osm/europe/germany/niedersachsen.osm.pbf
+	ln -sf $(TMP_DIR)/nds_$(TODAY).osm.pbf $(TMP_DIR)/nds.osm.pbf
 
 
 #uses this tool: http://wiki.openstreetmap.org/wiki/Osmconvert
 #and this tool: https://github.com/k4r573n/osc2sql
+#still experimental!
 createDiff:
-	osmconvert32 $(OLD_DATA) $(NEW_DATA) --diff -o=changefile.osc
-	osc2sql -i changefile.osc -o update_diff.sql
+	osmconvert32 $(OLD_DATA) $(NEW_DATA) --diff -o=$(TMP_DIR)/changefile.osc
+	osc2sql -i $(TMP_DIR)/changefile.osc -o $(TMP_DIR)/update_diff.sql
 
 
 convert:
-	osmosis --rx $(INPUT) --wmsd $(OUTPUT).sql
+	osmosis --rx $(INPUT) --wmsd $(TMP_DIR)/$(OUTPUT).sql
+
+# 2,3 GB - to big for free hosts!
+convert_nds:
+	osmosis --read-pbf $(TMP_DIR)/nds.osm.pbf --wmsd $(TMP_DIR)/$(OUTPUT).sql
 
 
 filter:
 	osmosis --read-pbf $(INPUT) \
 		--node-key  keyList="$(KEYLIST)" \
-	--write-xml filtered_$(TODAY).osm
-	ln -sf filtered_$(TODAY).osm filtered.osm
+	--write-xml $(TMP_DIR)/filtered_$(TODAY).osm
+	ln -sf $(TMP_DIR)/filtered_$(TODAY).osm $(TMP_DIR)/filtered.osm
 
 
 filterAndConvert:
 	osmosis --rx $(INPUT) \
 		--node-key  keyList="$(KEYLIST)" \
-	--wmsd upload_all_filt_$(TODAY).sql
-	ln -sf upload_all_filt_$(TODAY).sql upload.sql
+	--wmsd $(TMP_DIR)/upload_all_filt_$(TODAY).sql
+	ln -sf $(TMP_DIR)/upload_all_filt_$(TODAY).sql $(TMP_DIR)/upload.sql
 
 
-download: 
-	[ -e $(INPUT) ] && rm $(INPUT) || echo ""
-	make input
+#download: 
+#	[ -e $(INPUT) ] && rm $(INPUT) || echo ""
+#	make input
 
-doWheelchair:
-	make OSM_KEY=wheelchair VALUE=*
+#doWheelchair:
+#	make OSM_KEY=wheelchair VALUE=*
 
-input: $(INPUT)
+#input: $(INPUT)
 
 
 #first zip sql-file upload
 #Password has to be placed in File ./.ftp_api_pw
 upload: 
-	zip upload.zip $(UPLOAD)
-	./ftp_upload.sh $(API_SERVER)\
-		$(USER_API_SERVER) `cat ./.ftp_api_pw`\
+	zip $(TMP_DIR)/upload.zip $(TMP_DIR)/$(UPLOAD)
+	./tools/ftp_upload.sh $(API_SERVER)\
+		$(USER_API_SERVER) `cat ./config/.ftp_api_pw`\
 		./osm/upload/ \
-		`pwd`/upload.zip\
+		$(TMP_DIR)/upload.zip\
 		upload.zip
-	rm upload.zip
-	wget -O status "http://$(FRONTEND_SERVER)/osm/upload/unzipfile.php?file=upload.zip&dir=./"
+	rm $(TMP_DIR)/upload.zip
+	wget -O $(TMP_DIR)/status "http://$(FRONTEND_SERVER)/osm/unzipfile.php?file=upload.zip&dir=./upload/"
 	echo "rückgabe:"
-	cat status
-	rm status
+	cat $(TMP_DIR)/status
+	rm $(TMP_DIR)/status
 
 #applyUpload:
 #	echo "clear DB"
@@ -126,17 +143,24 @@ upload:
 #	without clearing the tables for incremental uploads
 applyUpload:
 	echo "fill DB"
-	wget -O status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=./upload/$(UPLOAD)"
+	wget -O $(TMP_DIR)/status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=./upload/$(UPLOAD)"
 	echo "rückgabe:"
-	cat status
-	rm status
+	cat $(TMP_DIR)/status
+	rm $(TMP_DIR)/status
+	echo "<?php print '$(shell date +%d.%m.%Y)'; ?>" > $(TMP_DIR)/last_db_update.php
+	./tools/ftp_upload.sh $(API_SERVER)\
+		$(USER_API_SERVER) `cat ./config/.ftp_api_pw`\
+		./osm/config/ \
+		$(TMP_DIR)/last_db_update.php\
+		last_db_update.php
+
 
 cleanDB:
 	echo "clear DB"
-	wget -O status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=clear_all_tables.sql"
+	wget -O $(TMP_DIR)/status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=clear_all_tables.sql"
 	echo "rückgabe:"
-	cat status
-	rm status
+	cat $(TMP_DIR)/status
+	rm $(TMP_DIR)/status
 
 #######################################################################
 ## Upload frontend
@@ -145,18 +169,37 @@ cleanDB:
 #first zip all files of project for upload
 #Password has to be placed in File ./.ftp_frontend_pw
 upload_project:
-	cd .. && zip $(PROJECT).zip js/*.js js/img/* \
-		js/theme/default/style.css style.css img/* README index.htm -r css/*
-	./ftp_upload.sh $(FRONTEND_SERVER)\
-		$(USER_FRONTEND_SERVER) `cat ./.ftp_frontend_pw`\
+	cd frontend && zip $(TMP_DIR)/$(PROJECT).zip js/*.js js/img/* \
+		js/theme/default/style.css css/style.css img/* ../README index.php -r css/*
+	./tools/ftp_upload.sh $(FRONTEND_SERVER)\
+		$(USER_FRONTEND_SERVER) `cat ./config/.ftp_frontend_pw`\
 		./osm/upload/ \
-		`pwd`/../$(PROJECT).zip\
+		$(TMP_DIR)/$(PROJECT).zip\
 		$(PROJECT).zip
-	rm ../$(PROJECT).zip
-	wget -O status "http://$(FRONTEND_SERVER)/osm/upload/unzipfile.php?file=$(PROJECT).zip&dir=../$(PROJECT)"
+	rm $(TMP_DIR)/$(PROJECT).zip
+	wget -O $(TMP_DIR)/status "http://$(FRONTEND_SERVER)/osm/unzipfile.php?file=$(PROJECT).zip&dir=$(PROJECT)"
 	echo "rückgabe:"
-	cat status
-	rm status
+	cat $(TMP_DIR)/status
+	rm $(TMP_DIR)/status
+
+#######################################################################
+## Upload Backend
+###################
+
+#first zip all files of project for upload
+#Password has to be placed in File ./.ftp_frontend_pw
+upload_backend:
+	cd backend && zip $(TMP_DIR)/backend.zip *.php clear_all.sql api/* config/.mysql.config.php
+	./tools/ftp_upload.sh $(API_SERVER)\
+		$(USER_API_SERVER) `cat ./config/.ftp_api_pw`\
+		./osm/upload/ \
+		$(TMP_DIR)/backend.zip\
+		backend.zip
+	rm $(TMP_DIR)/backend.zip
+	wget -O $(TMP_DIR)/status "http://$(API_SERVER)/osm/unzipfile.php?file=backend.zip&dir=./"
+	echo "rückgabe:"
+	cat $(TMP_DIR)/status
+	rm $(TMP_DIR)/status
 
 clean:
-	rm *.sql
+	rm $(TMP_DIR)/*.sql

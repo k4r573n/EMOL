@@ -1,7 +1,7 @@
 <html>
 <head>
-   <title>OSM Local Tiles</title>
-   <link rel="stylesheet" href="style.css" type="text/css" />
+   <title>EASY Map Overlays - Demo</title>
+   <link rel="stylesheet" href="css/style.css" type="text/css" />
    <!-- bring in the OpenLayers javascript library
         (here we bring it from the remote site, but you could
         easily serve up this javascript yourself) -->
@@ -270,10 +270,13 @@
 		 z.Z. sind nur POIs aus niedersachsen Importiert
 		 <hr>
 		 <b>Last Update Database: </b>
-		 <span id="last_update">16.12.11</span>
+		 <span id="last_update_db"><?php include "../config/last_db_update.php" ?></span>
+		 <br>
+		 <b>Last Update Frontend: </b>
+		 <span id="last_update_fe">$$last_frontend_update$$</span>
 		 <br>
 		 <b>Last Update Code: </b>
-		 <span id="last_update">maybe Today^^ see code</span>
+		 <span id="last_update_cd">maybe Today^^ see code</span>
 		 <hr>
 		 <h3 style="margin: 1px 0px 2px;">Infos:</h3>
 		 comming soon<br>

@@ -6,7 +6,7 @@
  * !!! untested !!!
  *
  */
-include "mysql.config";
+include "config/.mysql.config.php";
 
 // SQL File
 $SQLFile = 'upload.sql';
