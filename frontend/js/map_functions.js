@@ -139,7 +139,7 @@ function init_map() {
 				styleMap: styleMap,
 			});
 	map.addLayer(search_markers);
-	map.setLayerIndex(search_markers, 0); //to render this layer oon top
+	map.setLayerIndex(search_markers, 0); //to render this layer on top
 	/* END - Search Marker */
 
 
@@ -159,7 +159,7 @@ function init_map() {
 	map.setLayerIndex(edu_layer, 3); //to render this layer on bottom
 
 	// adding accessibillity overlay
-	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
+	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs",{visibility:false});
 	map.addLayer(wheelLayer);
 	map.setLayerIndex(wheelLayer, 4); //to render this layer on bottom
 

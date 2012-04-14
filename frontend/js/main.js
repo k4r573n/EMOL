@@ -10,8 +10,8 @@
 
 // Start position for the map (hardcoded here for simplicity)
 //var lat=53.292; var lon=10.50; //Scharnebeck
-var lat=52.284; var lon=10.52; //BS
-var zoom=16;
+var lat=52.262; var lon=10.524; //BS
+var zoom=14;
 
 var map, //complex object of type OpenLayers.Map
 	objectsLayer, //hitchhiking spots

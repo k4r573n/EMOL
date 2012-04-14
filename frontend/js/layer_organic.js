@@ -76,8 +76,8 @@ OpenLayers.Layer.Vector.Organic = OpenLayers.Class(OpenLayers.Layer.Vector, {
 													 else if((feature.attributes["k"] == "shop")&&(feature.attributes["v"] == "organic"))
 															return "./img/icons/bug_48px.png";
 													 // still ok (see wiki)
-													// else if((feature.attributes["k"] == "shop")&&(feature.attributes["v"] == "second_hand"))
-													//		return "./img/icons/bug_48px.png";
+													else if((feature.attributes["k"] == "shop")&&(feature.attributes["v"] == "second_hand"))
+															return "./img/icons/second_hand2_48px.png";
 													 else
 															return "./img/icons/question_48px.png";
 											}
