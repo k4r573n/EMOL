@@ -1,7 +1,13 @@
 <html>
 <head>
    <title>EASY Map Overlays - Demo</title>
-   <link rel="stylesheet" href="css/style.css" type="text/css" />
+	 <meta name="robots" content="nofollow">. 
+	 <meta name="author" content="Karsten Hinz">
+	 <meta name="description" content="This is a demonstration how to use it.">
+   <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map">
+	 <meta name="date" content="<?php include 'last_update.php'; ?>">
+
+	 <link rel="stylesheet" href="css/style.css" type="text/css" />
    <!-- bring in the OpenLayers javascript library
         (here we bring it from the remote site, but you could
         easily serve up this javascript yourself) -->

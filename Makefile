@@ -169,7 +169,8 @@ cleanDB:
 #first zip all files of project for upload
 #Password has to be placed in File ./.ftp_frontend_pw
 upload_project:
-	cd frontend && zip $(TMP_DIR)/$(PROJECT).zip js/*.js js/img/* \
+	echo "<?php print '$(shell date +%Y-%m-%d)'; ?>" > frontend/last_update.php
+	cd frontend && zip $(TMP_DIR)/$(PROJECT).zip js/*.js js/img/* last_update.php\
 		js/theme/default/style.css css/style.css img/* ../README index.php -r css/*
 	./tools/ftp_upload.sh $(FRONTEND_SERVER)\
 		$(USER_FRONTEND_SERVER) `cat ./config/.ftp_frontend_pw`\
