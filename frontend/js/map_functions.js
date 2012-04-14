@@ -139,7 +139,7 @@ function init_map() {
 				styleMap: styleMap,
 			});
 	map.addLayer(search_markers);
-	map.setLayerIndex(search_markers, 99); //to render this layer oon top
+	map.setLayerIndex(search_markers, 0); //to render this layer oon top
 	/* END - Search Marker */
 
 
@@ -161,7 +161,7 @@ function init_map() {
 	// adding accessibillity overlay
 	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs");
 	map.addLayer(wheelLayer);
-	map.setLayerIndex(wheelLayer, 0); //to render this layer on bottom
+	map.setLayerIndex(wheelLayer, 4); //to render this layer on bottom
 
 
 	/* controls for selectable Layers */
@@ -288,8 +288,8 @@ function getDetails(id) {
     maps_debug("Calling details API (load)... ");
 
 		//var api_url = "http://127.0.0.1/xp/server_side/";
-		var api_url = "http://bastler.bplaced.net/osm/";
-    $.getJSON(api_url + 'api_tests.php?callback=?', //is running :)
+		var api_url = "http://bastler.bplaced.net/osm/api/";
+    $.getJSON(api_url + 'index.php?callback=?', //is running :)
         {
           id: id
         },
