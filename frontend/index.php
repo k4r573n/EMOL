@@ -1,9 +1,9 @@
 <html>
 <head>
-   <title>Organic Products Location Map</title>
+   <title>EASY Map Overlays - Demo</title>
 	 <meta name="robots" content="nofollow">. 
 	 <meta name="author" content="Karsten Hinz">
-	 <meta name="description" content="A map to show where shops with organic products or second hand shops are mapped and show small tagging bugs.">
+	 <meta name="description" content="This is a demonstration how to use it.">
    <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map">
 	 <meta name="date" content="<?php include 'last_update.php'; ?>">
 
@@ -311,7 +311,7 @@
 		 <a href="#" id="toggleLog" class="toggle_log">Debug</a> - 
 		 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
 		 <a href="#" id="braunschweig">goto bs</a>
-		 <h1>Organic Products Location Map</h1>
+		 <h1>EMOL - Easy Map OverLays</h1>
 		 <!--
 		 <a href="#" id="test">test</a> - 
 		 <a href="#" id="showLocationPanel">Locations</a> - 

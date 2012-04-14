@@ -153,11 +153,33 @@ function init_map() {
 	map.addLayer(organic_layer);
 	map.setLayerIndex(organic_layer, 2); //to render this layer on bottom
 
+	// adding Education overlay
+	edu_layer = new OpenLayers.Layer.Vector.Edu("Education Layer");
+	map.addLayer(edu_layer);
+	map.setLayerIndex(edu_layer, 3); //to render this layer on bottom
+
+	// adding accessibillity overlay
+	wheelLayer = new OpenLayers.Layer.Vector.WheelChair("Wheelchair POIs",{visibility:false});
+	map.addLayer(wheelLayer);
+	map.setLayerIndex(wheelLayer, 4); //to render this layer on bottom
+
 
 	/* controls for selectable Layers */
 	drawControls = {
+			select_wheel: new OpenLayers.Control.SelectFeature(
+					wheelLayer,
+					{
+						clickout: false
+					}
+			),
 			select_organic: new OpenLayers.Control.SelectFeature(
 					organic_layer,
+					{
+						clickout: false
+					}
+			),
+			select_edu: new OpenLayers.Control.SelectFeature(
+					edu_layer,
 					{
 						clickout: false
 					}

@@ -5,7 +5,7 @@
 ###############################################
 
 #create a sql-file from an osm-file
-PROJECT = organic
+PROJECT = emol
 
 FRONTEND_SERVER = bastler.bplaced.net
 USER_FRONTEND_SERVER = bastler
