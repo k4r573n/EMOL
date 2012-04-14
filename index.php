@@ -56,6 +56,7 @@ h1 {
 }
 .left {
 		float:left;
+		margin-right: 2em;
 }
 
 .change {
@@ -98,9 +99,9 @@ foreach ($dirs as $dir) {
 	$tags = get_meta_tags($dir."/index.php");
 	print "<div id=\"$name\" class=\"map_box\">\n";
 	print "<div class=\"left\">\n";
-	print "<img width=100 height=100/>\n";
+	print "<a href=\"./$dir/\"><img width=150 src=\"./$dir/img/logo.png\"/></a>\n";
 	print "</div><div class=\"right\">\n";
-	print "<a class=\"map_link\" href=\"./$dir/index.php\">$name</a><br>\n";
+	print "<a class=\"map_link\" href=\"./$dir/\">$name</a><br>\n";
 	print "<span class=\"change\">last change: ";
 	include "$dir/last_update.php";
 	print "</span><br>\n";
