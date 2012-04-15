@@ -6,6 +6,7 @@
 	 <meta name="description" content="A map to show where shops with organic products or second hand shops are mapped and show small tagging bugs.">
    <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map">
 	 <meta name="date" content="<?php include 'last_update.php'; ?>">
+	 <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
 
 	 <link rel="stylesheet" href="css/style.css" type="text/css" />
    <!-- bring in the OpenLayers javascript library
