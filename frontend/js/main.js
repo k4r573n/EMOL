@@ -104,6 +104,13 @@ $(document).ready(function() {
             //alert("lat:"+lat+" lon:"+lon);
         });
 
+        $("#legend, #informationBox .close").click(function(event){
+            event.preventDefault();
+						$("#informationBox").toggle()
+
+            //alert("lat:"+lat+" lon:"+lon);
+        });
+
 				////get Locations
         //$("#loadLocations").click(function(event){
         //    event.preventDefault();

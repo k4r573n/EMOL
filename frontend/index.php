@@ -101,8 +101,8 @@
       /*#log .handle {*/
       .handle {
           background: none repeat scroll 0 0 #004B61;
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
           color: #FFFFFF;
           cursor: move;
           display: block;
@@ -121,7 +121,32 @@
           padding-right: 0;
           width: 410px;
       }
-
+/*
+      #informationBox {
+          -moz-border-bottom-colors: none;
+          -moz-border-image: none;
+          -moz-border-left-colors: none;
+          -moz-border-right-colors: none;
+          -moz-border-top-colors: none;
+          /*background: url("../gfx/bg.png") repeat-x scroll left bottom #EDCA50;*/
+/*          background-color: #FFF;/* #C9AB22;*/
+ /*         border-color: #C9ABF2 #C9ABC2 transparent;
+          border-radius: 10px 10px 0px 0px;
+          border-style: solid solid none;
+          border-width: 1px 1px medium;
+          box-shadow: 0 0 5px #CCCCCC;
+          color: #000000;
+          display: block;
+          font-size: 11px;
+          margin: 30px 30px 0px 40px;
+          padding: 0 7px 7px;
+          position: absolute;
+          text-align: left;
+          width: 600px;
+					z-index: 99998;
+					opacity: 0.7;
+      }
+*/
       .floatingPanel {
           -moz-border-bottom-colors: none;
           -moz-border-image: none;
@@ -129,9 +154,9 @@
           -moz-border-right-colors: none;
           -moz-border-top-colors: none;
           /*background: url("../gfx/bg.png") repeat-x scroll left bottom #EDCA50;*/
-          background-color: #999999;/* #C9AB22;*/
-          border-color: #C9AB22 #C9AB22 transparent;
-          border-radius: 3px 3px 3px 3px;
+          background-color: #FFF;/* #C9AB22;*/
+          border-color: #C9ABF2 #C9ABC2 transparent;
+          border-radius: 10px 10px 10px 10px;
           border-style: solid solid none;
           border-width: 1px 1px medium;
           box-shadow: 0 0 5px #CCCCCC;
@@ -144,6 +169,7 @@
           text-align: left;
           width: 230px;
           z-index: 99998;
+					opacity: 0.9;
       }
 
       .align_right {
@@ -311,7 +337,8 @@
 
 		 <a href="#" id="toggleLog" class="toggle_log">Debug</a> - 
 		 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
-		 <a href="#" id="braunschweig">goto bs</a>
+		 <a href="#" id="braunschweig">goto bs</a> - 
+		 <a href="#" id="legend">legend</a>
 		 <h1>EMOL - Easy Map OverLays</h1>
 		 <!--
 		 <a href="#" id="test">test</a> - 
@@ -338,6 +365,28 @@
 
 	 </div>
 
+   <div id="informationBox" class="floatingPanel draggable hidden ui-draggable" style="display: none;">
+        <b class="handle">
+            Legend <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
+        </b>
+				Here you can find an explanation of all overlayed Icons<br>
+				<!-- generate this list in future -->
+				<div class="legend_item">
+				<img src="img/icons/organic2_48px.png"> this shows a shop where you can Buy some or only organic products
+				</div>
+				<div class="legend_item">
+				<img src="img/icons/second_hand2_48px.png"> this shows a shop where you can Buy some or only second hand products
+				</div>
+				<div class="legend_item">
+				<img src="img/icons/bug_48px.png"> This is a wrong tagged organic shop (its tagged shop=organic instead of e.g. shop=supermarket organic=only)
+				</div>
+				<div class="legend_item">
+				<img src="img/icons/question_48px.png"> This should not be visible if not - there is a bug in my program.
+				</div>
+				
+					
+
+    </div>
 
 
    <div id="measureTools" class="floatingPanel draggable hidden ui-draggable" style="display: none;">
