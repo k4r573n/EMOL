@@ -339,7 +339,7 @@
 		 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
 		 <a href="#" id="braunschweig">goto bs</a> - 
 		 <a href="#" id="legend">legend</a>
-		 <h1>Organic Product Location Map</h1>
+		 <h1>Organic Product Location Map - beta</h1>
 		 <!--
 		 <a href="#" id="test">test</a> - 
 		 <a href="#" id="showLocationPanel">Locations</a> - 

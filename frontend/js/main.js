@@ -67,6 +67,7 @@ $(document).ready(function() {
             e.preventDefault();
             $(this).blur();
             $("div#measureTools").toggle();
+            $("input#noneToggle").click();
         });
 
         // Tools Panel - make it draggable
@@ -104,6 +105,7 @@ $(document).ready(function() {
             //alert("lat:"+lat+" lon:"+lon);
         });
 
+				$("#informationBox").show();
         $("#legend, #informationBox .close").click(function(event){
             event.preventDefault();
 						$("#informationBox").toggle()
