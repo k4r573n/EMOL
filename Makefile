@@ -5,7 +5,7 @@
 ###############################################
 
 #create a sql-file from an osm-file
-PROJECT = organic
+PROJECT = emol
 
 FRONTEND_SERVER = bastler.bplaced.net
 USER_FRONTEND_SERVER = bastler
@@ -22,22 +22,28 @@ UPLOAD = upload.sql
 #ablsolute path!!! without terminating '/'
 TMP_DIR = $(shell readlink -m tmp/)
 
-##location
-LEFT = 10.492
-BOTTOM = 52.2407
-RIGHT = 10.7551
-TOP = 52.4801
-#LEFT = 6.43
-#BOTTOM = 50.32
-#RIGHT = 14.43
-#TOP = 54.27
+##location (bs)
+#LEFT = 10.492
+#BOTTOM = 52.2407
+#RIGHT = 10.7551
+#TOP = 52.4801
+#whole Germany:
+LEFT = 5.3
+BOTTOM = 46.6
+RIGHT = 15.3
+TOP = 55.2
+
+#used for overpass API request (is shorter
+OPF = ($(BOTTOM),$(LEFT),$(TOP),$(RIGHT));out+meta;
 
 TODAY = $(shell date +%Y_%m_%d)
+#lines in sql file
+LINES=$(shell wc -l tmp/$(UPLOAD) | grep -o ^[0123456789]*)
 
 OLD_DATA = $(TMP_DIR)/filtered_11_11_27.osm
 NEW_DATA = $(TMP_DIR)/filtered.osm
 
-KEYLIST = wheelchair,tactile_paving,traffic_signals:sound,information,description:de:blind,amenity,leisure,blind:website:de,blind:audio:de,organic,shop
+KEYLIST = wheelchair,tactile_paving,traffic_signals:sound,information,description:de:blind,amenity,leisure,blind:website:de,blind:audio:de,organic,shop,second_hand
 
 #alle meist genutzten ausgaben generieren
 #getNiedersachsen
@@ -59,13 +65,17 @@ incUpdate:
 #clears the whole database and fills ist with new data
 database_overwrite:
 	make filter INPUT=$(TMP_DIR)/nds.osm.pbf
-	sleep 2
+	echo "#######################################################################"
+	sleep 10
 	make filterAndConvert INPUT=$(TMP_DIR)/filtered.osm
-	sleep 2
+	echo "#######################################################################"
+	sleep 10
 	make upload
-	sleep 2
+	echo "#######################################################################"
+	sleep 10
 	make cleanDB
-	sleep 2
+	echo "#######################################################################"
+	sleep 10
 	make applyUpload
 
 
@@ -73,6 +83,13 @@ getNiedersachsen:
 	wget -O $(TMP_DIR)/nds_$(TODAY).osm.pbf http://download.geofabrik.de/osm/europe/germany/niedersachsen.osm.pbf
 	ln -sf $(TMP_DIR)/nds_$(TODAY).osm.pbf $(TMP_DIR)/nds.osm.pbf
 
+getGermany:
+	wget -O $(TMP_DIR)/germany_$(TODAY).osm.pbf http://download.geofabrik.de/osm/europe/germany.osm.pbf
+	ln -sf $(TMP_DIR)/germany_$(TODAY).osm.pbf $(TMP_DIR)/germany.osm.pbf
+
+overpass:
+	wget --read-timeout 3600 -O $(TMP_DIR)/germany_$(TODAY).osm 'http://overpass-api.de/api/interpreter?data=[timeout:3600];node["shop"]$(OPF)node["organic"]$(OPF)node["second_hand"]$(OPF)node["amenity"]$(OPF)'
+	ln -sf $(TMP_DIR)/germany_$(TODAY).osm $(TMP_DIR)/germany.osm
 
 #uses this tool: http://wiki.openstreetmap.org/wiki/Osmconvert
 #and this tool: https://github.com/k4r573n/osc2sql
@@ -113,11 +130,22 @@ filterAndConvert:
 
 #input: $(INPUT)
 
+#the germany file is to big! scripts will be killed :(
+# therefore I want to split the import files, upload and apply seperatly
+splitAndUpload:
+	rm -f $(TMP_DIR)/upload_part_*
+	./tools/split_upload.py -i $(TMP_DIR)/$(UPLOAD) -o $(TMP_DIR) -s 200000
+	$(foreach var,$(shell ls $(TMP_DIR)/upload_part_*),make uploadAndApply UPLOAD=$(var);)
+
+
+uploadAndApply:
+	make upload $(UPLOAD)
+	make applyUpload $(UPLOAD)
 
 #first zip sql-file upload
 #Password has to be placed in File ./.ftp_api_pw
 upload: 
-	zip $(TMP_DIR)/upload.zip $(TMP_DIR)/$(UPLOAD)
+	cd $(TMP_DIR) && zip upload.zip $(UPLOAD)
 	./tools/ftp_upload.sh $(API_SERVER)\
 		$(USER_API_SERVER) `cat ./config/.ftp_api_pw`\
 		./osm/upload/ \
@@ -129,18 +157,6 @@ upload:
 	cat $(TMP_DIR)/status
 	rm $(TMP_DIR)/status
 
-#applyUpload:
-#	echo "clear DB"
-#	wget -O status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=clear_all_tables.sql"
-#	echo "rückgabe:"
-#	cat status
-#	rm status
-#	echo "fill DB"
-#	wget -O status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=./upload/$(UPLOAD)"
-#	echo "rückgabe:"
-#	cat status
-#	rm status
-#	without clearing the tables for incremental uploads
 applyUpload:
 	echo "fill DB"
 	wget -O $(TMP_DIR)/status "http://$(FRONTEND_SERVER)/osm/insert_sql.php?file=./upload/$(UPLOAD)"

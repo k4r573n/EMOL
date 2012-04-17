@@ -7,10 +7,9 @@ print("Splits the <infile> in smaller files!")
 
 
 
-def parse_and_convert(infile, outdir):
+def parse_and_convert(infile, outdir, part_size):
 	print("start parsing")
 
-	part_size = 3
 	count = 0
 	fooder = "COMMIT;"
 	header1 = "set character set utf8;"
@@ -23,8 +22,8 @@ def parse_and_convert(infile, outdir):
 
 		#print(line)
 
-		print("create new file: '"+outdir+"/upload_part_%d.txt'"%(count))
-		fout = open(outdir+"/upload_part_%d.txt"%(count), "w") 
+		print("create new file: '"+outdir+"/upload_part_%d.sql'"%(count))
+		fout = open(outdir+"/upload_part_%d.sql"%(count), "w") 
 		#head
 		fout.write(header1+"\n") 
 		fout.write(header2+"\n") 
@@ -58,13 +57,14 @@ def parse_and_convert(infile, outdir):
 
 def main(argv):
 
-	infile = "../tmp/test.txt"
+	infile = "../tmp/upload.sql"
 	outdir = "../tmp"
+	part_size = 200000
 
 	try:
-		opts, args = getopt.getopt(argv, "i:o:h", ["infile=", "outdir="])
+		opts, args = getopt.getopt(argv, "i:o:s:h", ["infile=", "outdir=", "partsize="])
 	except getopt.GetoptError:
-		print("Wrong Syntax!!! Try to use \n"+sys.argv[0]+" -i <infile> -o <outdir>")
+		print("Wrong Syntax!!! Try to use \n"+sys.argv[0]+" -i <infile> -o <outdir> -s <part size (lines count)>")
 		sys.exit(2)
 
 	for opt, arg in opts:
@@ -75,8 +75,10 @@ def main(argv):
 			 infile = arg
 		elif opt in ("-o", "--outdir"):
 			outdir = arg
+		elif opt in ("-s", "--outsize"):
+			part_size = int(arg)
 
-	parse_and_convert(infile, outdir)
+	parse_and_convert(infile, outdir, part_size)
 
 
 if __name__ == "__main__":
