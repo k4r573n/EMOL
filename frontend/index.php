@@ -164,13 +164,17 @@
           display: block;
           font-size: 11px;
           margin: 0;
-          padding: 0 7px 7px;
+					/*padding: 0 7px 7px;*/
           position: absolute;
           text-align: left;
           width: 230px;
           z-index: 99998;
 					opacity: 0.9;
       }
+
+			.box {
+					padding: 0 7px 7px;
+			}
 
       .align_right {
           float: right;
@@ -366,9 +370,10 @@
 	 </div>
 
    <div id="informationBox" class="floatingPanel draggable hidden ui-draggable" style="display: none;">
-        <b class="handle">
-            Legend <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
-        </b>
+			<b class="handle">
+					Legend <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
+			</b>
+			<div class="box">
 				Here you can find an explanation of all overlayed Icons<br>
 				<!-- generate this list in future -->
 				<div class="legend_item">
@@ -386,6 +391,7 @@
 				
 					
 
+			</div>
     </div>
 
 
@@ -393,6 +399,7 @@
         <b class="handle">
             ToolBox <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
         </b>
+				<div class="box">
 
                 <input type="radio" name="type" value="none" id="noneToggle"
                        onclick="toggleMeasureControl(this);" checked="checked" />
@@ -403,7 +410,8 @@
                 <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleMeasureControl(this);" />
                 <label for="polygonToggle">measure area</label>
 
-        <div id="output">messung:</div>
+								<div id="output">messung:</div>
+				</div>
     </div>
 
     <!-- for debugging -->
