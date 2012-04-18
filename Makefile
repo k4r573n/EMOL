@@ -129,6 +129,17 @@ filterAndConvert:
 #	make OSM_KEY=wheelchair VALUE=*
 
 #input: $(INPUT)
+germany:
+	make getGermany
+	echo "#######################################################################"
+	make filter INPUT=$(TMP_DIR)/germany.osm.pbf
+	echo "#######################################################################"
+	make filterAndConvert INPUT=$(TMP_DIR)/filtered.osm
+	echo "#######################################################################"
+	make cleanDB
+	echo "#######################################################################"
+	make splitAndUpload
+
 
 #the germany file is to big! scripts will be killed :(
 # therefore I want to split the import files, upload and apply seperatly
