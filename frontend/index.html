@@ -1,12 +1,12 @@
 <html>
 <head>
    <title>EASY Map Overlays - Demo</title>
-	 <meta name="robots" content="nofollow">. 
-	 <meta name="author" content="Karsten Hinz">
-	 <meta name="description" content="This is a demonstration how to use it.">
-   <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map">
-	 <meta name="date" content="<?php include 'last_update.php'; ?>">
-	 <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico">
+	 <meta name="robots" content="nofollow" />. 
+	 <meta name="author" content="Karsten Hinz" />
+	 <meta name="description" content="This is a demonstration how to use it." />
+   <meta name="keywords" content="OSM, OpenStreetMap, EMOL, Special Maps, Map" />
+	 <meta name="date" content="${date}" />
+	 <link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico" />
 
 	 <link rel="stylesheet" href="css/style.css" type="text/css" />
    <!-- bring in the OpenLayers javascript library
@@ -272,13 +272,13 @@
 		 <h3>Location Favourits</h3>
 		 <a href="#" id="loadLocations">load </a> - 
 		 <div border="1px" style="margin: 10px;">
-			 Name:<br>
-			 <input id="name" type="text" style="width : 100%"/><br>
-			 Describtion:<br>
-			 <input id="desc" type="text" style="width : 100%"/><br>
-			 <br>
+			 Name:<br/>
+			 <input id="name" type="text" style="width : 100%"/><br/>
+			 Describtion:<br/>
+			 <input id="desc" type="text" style="width : 100%"/><br/>
+			 <br/>
 			 <a href="#" id="saveLocation">save </a> - 
-			 <hr>
+			 <hr/>
 		 </div>
 		 <ol id="locationList">
 			 <!--<li class="ui-widget-content">Item 1</li>-->
@@ -288,40 +288,40 @@
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: none;">
 		 <h3 style="margin: 2px 0px 2px;">Selected Point</h3>
 		 selected features:
-		 <span id="counter">0</span><br>
-		 <a href="#" id="goto">goto </a><br>
+		 <span id="counter">0</span><br/>
+		 <a href="#" id="goto">goto </a><br/>
 		 lat: <span id="lat">0.00</span>
-		 lon: <span id="lon">0.00</span><br>
-		 <hr>
+		 lon: <span id="lon">0.00</span><br/>
+		 <hr/>
 		 <h3 style="margin: 1px 0px 2px;">Last change</h3> 
 		 <span id="mapper">user</span>
 		 <span id="last_change">date</span>
-		 <hr>
+		 <hr/>
 		 <h3 style="margin: 1px 0px 3px;">Describtion:</h3>
 		 <div id="describtion">desc</div>
-		 <hr>
+		 <hr/>
 	 </div>
 
 	 <div id="StartInfoPanel" class="InfoPanel" style="display: block;">
 		 <h3 style="margin: 1px 0px 2px;">Willkommen auf dieser Experimentellen Karte</h3>
 		 z.Z. sind nur POIs aus niedersachsen Importiert
-		 <hr>
+		 <hr/>
 		 <b>Last Update Database: </b>
-		 <span id="last_update_db"><?php include "../config/last_db_update.php" ?></span>
-		 <br>
+		 <span id="last_update_db">read with js</span>
+		 <br/>
 		 <b>Last Update Frontend: </b>
-		 <span id="last_update_fe"><?php include 'last_update.php'; ?></span>
-		 <br>
-		 <hr>
+		 <span id="last_update_fe">${nice_date}</span>
+		 <br/>
+		 <hr/>
 		 <h3 style="margin: 1px 0px 2px;">Infos:</h3>
-		 comming soon<br>
-		 <hr>
+		 comming soon<br/>
+		 <hr/>
 		 bei Fragen oder Anregungen schreibt mir eine Mail an
 		 <h3 style="margin: 1px 0px 2px;">Kontakt:</h3>
-		 <b>Mail:</b><a href="mailto:k4r573n(at)gmail.de">k4r573n(at)gmail.de</a><br>
-		 <b>Jabber:</b> <a href="jabber:k4r573n@jabber.ccc.de">k4r573n@jabber.ccc.de</a><br>
-		 <b>OSM-Wiki:</b> <a href="http://wiki.openstreetmap.org/wiki/User:K4r573n">k4r573n</a><br>
-		 <br><b>Code:</b><br>
+		 <b>Mail:</b><a href="mailto:k4r573n(at)gmail.de">k4r573n(at)gmail.de</a><br/>
+		 <b>Jabber:</b> <a href="jabber:k4r573n@jabber.ccc.de">k4r573n@jabber.ccc.de</a><br/>
+		 <b>OSM-Wiki:</b> <a href="http://wiki.openstreetmap.org/wiki/User:K4r573n">k4r573n</a><br/>
+		 <br/><b>Code:</b><br/>
 		 <a href="https://github.com/k4r573n/EMOL">https://github.com/k4r573n/EMOL</a>
 	 </div>
 
@@ -331,7 +331,7 @@
       <div class="ui-widget">
         <input type="text" value="" id="q" name="q" />
         <button type="submit" class="search_submit button" title="Search">
-          <span class="icon magnifier">&nbsp;</span>
+          <span class="icon magnifier"><!--&nbsp;--></span>
           <span class="hidden">Search</span>
         </button>
         <div class="clear"></div>
@@ -374,19 +374,19 @@
 					Legend <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
 			</b>
 			<div class="box">
-				Here you can find an explanation of all overlayed Icons<br>
+				Here you can find an explanation of all overlayed Icons<br/>
 				<!-- generate this list in future -->
 				<div class="legend_item">
-				<img src="img/icons/organic2_48px.png"> this shows a shop where you can Buy some or only organic products
+				<img src="img/icons/organic2_48px.png"/> this shows a shop where you can Buy some or only organic products
 				</div>
 				<div class="legend_item">
-				<img src="img/icons/second_hand2_48px.png"> this shows a shop where you can Buy some or only second hand products
+				<img src="img/icons/second_hand2_48px.png"/> this shows a shop where you can Buy some or only second hand products
 				</div>
 				<div class="legend_item">
-				<img src="img/icons/bug_48px.png"> This is a wrong tagged organic shop (its tagged shop=organic instead of e.g. shop=supermarket organic=only)
+				<img src="img/icons/bug_48px.png"/> This is a wrong tagged organic shop (its tagged shop=organic instead of e.g. shop=supermarket organic=only)
 				</div>
 				<div class="legend_item">
-				<img src="img/icons/question_48px.png"> This should not be visible if not - there is a bug in my program.
+				<img src="img/icons/question_48px.png"/> This should not be visible if not - there is a bug in my program.
 				</div>
 				
 					
