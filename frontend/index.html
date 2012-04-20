@@ -121,32 +121,15 @@
           padding-right: 0;
           width: 410px;
       }
-/*
-      #informationBox {
-          -moz-border-bottom-colors: none;
-          -moz-border-image: none;
-          -moz-border-left-colors: none;
-          -moz-border-right-colors: none;
-          -moz-border-top-colors: none;
-          /*background: url("../gfx/bg.png") repeat-x scroll left bottom #EDCA50;*/
-/*          background-color: #FFF;/* #C9AB22;*/
- /*         border-color: #C9ABF2 #C9ABC2 transparent;
-          border-radius: 10px 10px 0px 0px;
-          border-style: solid solid none;
-          border-width: 1px 1px medium;
-          box-shadow: 0 0 5px #CCCCCC;
-          color: #000000;
-          display: block;
-          font-size: 11px;
-          margin: 30px 30px 0px 40px;
-          padding: 0 7px 7px;
-          position: absolute;
-          text-align: left;
-          width: 600px;
-					z-index: 99998;
-					opacity: 0.7;
-      }
-*/
+
+			.close {
+				background-color:#FFF;
+				border-color: #FFF;
+				border-radius: 10px 10px 10px 10px;
+				border-width: 1px 1px medium;
+
+			}
+
       .floatingPanel {
           -moz-border-bottom-colors: none;
           -moz-border-image: none;
@@ -251,6 +234,17 @@
 				font-weight: bold;
 			}
 
+			#fooder {
+				/*background-color: #DDD;*/
+				position: absolute; 
+				bottom:0px;
+				right: 0px; 
+				left:0px; 
+				height:25px; 
+				margin: 0px 10px 0px 10px;
+				text-align: right;
+			}
+
 			body, input, textarea, button, .button {
 				    color: #111111;
 						font-family: arial,helvetica,sans-serif;
@@ -304,14 +298,14 @@
 
 	 <div id="StartInfoPanel" class="InfoPanel" style="display: block;">
 		 <h3 style="margin: 1px 0px 2px;">Willkommen auf dieser Experimentellen Karte</h3>
-		 z.Z. sind nur POIs aus niedersachsen Importiert
+		 Datensatz und Karten stammen von 
+		 <a href="http://www.openstreetmap.org/">OpenStreetMap</a> 
+		 und stehen unter der 
+		 <a href="http://creativecommons.org/licenses/by-sa/2.0/deed.de">CC-BY-SA 2.0 Lizenz</a>.
 		 <hr/>
-		 <b>Last Update Database: </b>
-		 <span id="last_update_db">read with js</span>
-		 <br/>
-		 <b>Last Update Frontend: </b>
-		 <span id="last_update_fe">${nice_date}</span>
-		 <br/>
+		 <b>Database information</b><br/>
+		 Import:<span id="db_import_area">unknown</span> <br/>
+		 <span id="db_import_date">unknown</span> <br/>
 		 <hr/>
 		 <h3 style="margin: 1px 0px 2px;">Infos:</h3>
 		 comming soon<br/>
@@ -367,6 +361,11 @@
                 <label for="polygonToggle">draw polygon</label>
     </div>
 
+	 </div>
+
+	 <div id="fooder">
+		 Last Change: 
+		 <span id="last_change">${nice_date}</span>
 	 </div>
 
    <div id="informationBox" class="floatingPanel draggable hidden ui-draggable" style="display: none;">

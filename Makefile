@@ -21,6 +21,7 @@ UPLOAD = upload.sql
 
 #ablsolute path!!! without terminating '/'
 TMP_DIR = $(shell readlink -m tmp/)
+DOLLER = $$
 
 ##location (bs)
 #LEFT = 10.492
@@ -174,7 +175,7 @@ applyUpload:
 	echo "rückgabe:"
 	cat $(TMP_DIR)/status
 	rm $(TMP_DIR)/status
-	echo "<?php print '$(shell date +%d.%m.%Y)'; ?>" > $(TMP_DIR)/last_db_update.php
+	echo "<?php function get_db_change() {return '$(shell date +%d.%m.%Y)';} function get_db_import() {return 'germany';} ?>" > $(TMP_DIR)/last_db_update.php
 	./tools/ftp_upload.sh $(API_SERVER)\
 		$(USER_API_SERVER) `cat ./config/.ftp_api_pw`\
 		./osm/config/ \
@@ -209,6 +210,7 @@ upload_project:
 	echo "rückgabe:"
 	cat $(TMP_DIR)/status
 	rm $(TMP_DIR)/status
+	rm frontend/index.htm
 
 #######################################################################
 ## Upload Backend

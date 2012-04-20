@@ -91,6 +91,22 @@ $(document).ready(function() {
             $("#pages .page .content, #pages .page, #pages .close").hide();
         } 
 
+				//load Database info
+				$.ajax({
+					url: "http://bastler.bplaced.net/osm/api",
+					dataType: "jsonp",
+					data: 
+					{
+						who: "k4", 
+						info: "1",
+					},
+					crossDomain: true,
+					success: function(data) {
+							maps_debug("db info: last change:"+ data.last_change);
+							$("#db_import_area").text(data.data);
+							$("#db_import_date").text(data.last_change);
+					}
+				});
 
 
         // init the map
@@ -187,7 +203,9 @@ $(document).ready(function() {
         $("#braunschweig").click(function(event){
             event.preventDefault();
             //$(this).hide("slow");
-            zoomMapIn(10.5309, 52.2728,11);
+            //zoomMapIn(10.5309, 52.2728,11);
+
+
         });
 
         // Search form (from HH)

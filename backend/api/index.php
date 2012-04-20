@@ -1,10 +1,12 @@
 <?php
 /*
- * copyed from
+ * based on
  * http://stackoverflow.com/questions/6591947/make-my-json-string-parsed-openlayers-format-geojson
  *
  */
 include "../config/.mysql.config.php";
+// contains $db_change = <last change date>
+include "../config/last_db_update.php";
 
 class PoiDetails
 {
@@ -128,7 +130,11 @@ function createFeature($ID, $lat, $lon, $data)
 }
 
 
-if(isset($_GET['id'])) 
+if(isset($_GET['info']))
+{
+	echo $_GET['callback']. '({last_change: "'.get_db_change().'",system: "EMOL",data: "'.get_db_import().'" });';
+}
+else if(isset($_GET['id'])) 
 {
 	//returns all relevant details to this object
 	if (connect($hostname, $db_user, $db_password, $database_name)) {
