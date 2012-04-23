@@ -36,6 +36,12 @@ var projmerc = new OpenLayers.Projection("EPSG:900913");
 // use ist vor lat lon
 //var renderer = OpenLayers.Util.getParameters(window.location.href).renderer;
 //renderer = (renderer) ? [renderer] : OpenLayers.Layer.Vector.prototype.renderers;
+var nlat = OpenLayers.Util.getParameters(window.location.href).lat;
+lat = (nlat) ? nlat : lat;
+var nlon = OpenLayers.Util.getParameters(window.location.href).lon;
+lon = (nlon) ? nlon : lon;
+var nzoom = OpenLayers.Util.getParameters(window.location.href).zoom;
+zoom = (nzoom) ? nzoom : zoom;
 
 $(document).ready(function() {
         // Initialize stuff when page has finished loading
@@ -117,95 +123,20 @@ $(document).ready(function() {
             var lat = $("#lat").text();
             var lon = $("#lon").text();
 						zoomMapIn(lon,lat,17);
-
-            //alert("lat:"+lat+" lon:"+lon);
         });
 
-				$("#informationBox").show();
-        $("#legend, #informationBox .close").click(function(event){
+				$("#legendBox").show();
+        $("#legend, #legendBox .close").click(function(event){
             event.preventDefault();
-						$("#informationBox").toggle()
-
-            //alert("lat:"+lat+" lon:"+lon);
+						$("#legendBox").toggle()
         });
 
-				////get Locations
-        //$("#loadLocations").click(function(event){
-        //    event.preventDefault();
-        //    //sollte das info panel zeigen
-				//		maps_debug("load Location...");
-				//		getLocations();
-        //});
-
-				////save Location
-        //$("#saveLocation").click(function(event){
-        //    event.preventDefault();
-        //    //sollte das info panel zeigen
-				//		maps_debug("save Location...");
-				//		storeLocation();
-        //});
-
-        //function call - to test code
-        $("#test").click(function(event){
-            event.preventDefault();
-						maps_debug("Zoom: "+map.getZoom());
-
-						map.raiseLayer(map.getLayersByName("Search Results")[0], map.layers.length-1);
-						//addLocation({"name":"test","desc":"eine beschreibung","lat":0,"lon":0, "zoom":10});
-						//addLocation("tttt");
-
-        });
-
-				////shows the location List
-				//$("#showLocationPanel").click(function(event){
-        //    event.preventDefault();
-        //    //sollte das info panel zeigen
-				//		maps_debug("show LocationPanel");
-        //    $(".InfoPanel").hide();
-        //    $("#LocationPanel").show();
-        //});
-				//
-				////make location list selectalbe 
-				//$( "#locationList" ).selectable({
-				//	stop: function() {
-				//		//var result = $( "#select-result" ).empty();
-				//		$( ".ui-selected", this ).each(function() {
-				//			var index = $( "#locationList li" ).index( this );
-				//			//result.append( " #" + ( index + 1 ) );
-				//			maps_debug("select "+index);
-				//			maps_debug("lat:"+$(this).find("#lat").text());// +" lon:"+$("#lon", this) +" zoom:"+$("#zoom", this) );
-				//			var lonLat = new OpenLayers.LonLat($(this).find("#lon").text(), $(this).find("#lat").text()).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
-				//			map.setCenter (lonLat);
-				//			map.zoomTo($(this).find("#zoom").text());
-				//		});
-				//	}
-				//});
-
-
-//        //$(function() {
-//            $( "#toggleLog" ).button(
-//            {
-//              icons: {primary: "ui-icon-custom"},
-//              //icons: {primary: "ui-icon-locked"},
-//              text: false
-//            });
-//
-//            $( "#toggleMeasure" ).button(
-//            {
-//              //icons: {primary: "ui-icon-custom"},
-//              icons: {primary: "ui-icon-locked"},
-//              text: false
-//            });
-//            $( "#format" ).buttonset();
-//        //});
 
         //move map to Braunschweig
         $("#braunschweig").click(function(event){
             event.preventDefault();
             //$(this).hide("slow");
-            //zoomMapIn(10.5309, 52.2728,11);
-
-
+            zoomMapIn(10.5309, 52.2728,11);
         });
 
         // Search form (from HH)

@@ -55,14 +55,12 @@
       #format { margin-top: 2em; }
 
 			#map {
-					/* background-color: #93B3CD; */
 					bottom: 25px;
 					/* color: #E5F0F9; */
 					left: 0;
 					min-width: 600px;
 					position: absolute;
 					right: 0;
-					/* text-align: center; */
 					top: 80px;
 			}
 
@@ -163,30 +161,6 @@
           float: right;
       }
 
-			#locationList .ui-selecting { background: #FECA40; }
-			#locationList .ui-selected { background: #F39814; color: white; }
-			#locationList {
-					list-style-type: none;
-					margin: 0;
-					padding: 0;
-					width: 100%;
-			}
-			#locationList li {
-          border-radius: 10px 10px 10px 10px;
-          /*border-color: #C9AB22 #C9AB22 transparent;*/
-					margin: 4px 10px 4px 10px;
-					padding: 0px 10px 5px 10px;
-					font-size: 13px;
-					line-height: 8px;
-					/*h3 {font-size: 0.5em; }*/
-					/*height: 18px; */
-					/*width: 100%;*/
-			}
-			#locationList li {
-					/*margin: 5px 10px 5px 10px;*/
-					margin-top: 0px;
-      }
-          
       #search #q {
         background: none repeat scroll 0 0 transparent;
         border: 0 none;
@@ -235,7 +209,6 @@
 			}
 
 			#fooder {
-				/*background-color: #DDD;*/
 				position: absolute; 
 				bottom:0px;
 				right: 0px; 
@@ -259,25 +232,8 @@
 <!-- body.onload is called once the page is loaded (call the 'init' function) -->
 <body>
 
-   <!-- define a DIV into which the map will appear. Make it take up the whole window -->
+   <!-- define a DIV into which the map will appear. -->
    <div id="map" class="olMap" style="right : 250px;"></div>
-
-	 <div id="LocationPanel" class="InfoPanel" style="display: none;">
-		 <h3>Location Favourits</h3>
-		 <a href="#" id="loadLocations">load </a> - 
-		 <div border="1px" style="margin: 10px;">
-			 Name:<br/>
-			 <input id="name" type="text" style="width : 100%"/><br/>
-			 Describtion:<br/>
-			 <input id="desc" type="text" style="width : 100%"/><br/>
-			 <br/>
-			 <a href="#" id="saveLocation">save </a> - 
-			 <hr/>
-		 </div>
-		 <ol id="locationList">
-			 <!--<li class="ui-widget-content">Item 1</li>-->
-		 </ol>
-	 </div>
 
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: none;">
 		 <h3 style="margin: 2px 0px 2px;">Selected Point</h3>
@@ -320,47 +276,24 @@
 	 </div>
 
 	 <div id="header" style="position: absolute; top:0px;right: 0px; left:0px; border-size: 2px; height:70px; margin: 10px 10px 10px 10px; /*background-color: #eebb33;*/">
-    <div id="search" class="align_right">
-      <form method="get" action="#" id="search_form" name="search" role="search">
-      <div class="ui-widget">
-        <input type="text" value="" id="q" name="q" />
-        <button type="submit" class="search_submit button" title="Search">
-          <span class="icon magnifier"><!--&nbsp;--></span>
-          <span class="hidden">Search</span>
-        </button>
-        <div class="clear"></div>
-      </div>
-      </form>
-    </div>
+		 <div id="search" class="align_right">
+			 <form method="get" action="#" id="search_form" name="search" role="search">
+				 <div class="ui-widget">
+					 <input type="text" value="" id="q" name="q" />
+					 <button type="submit" class="search_submit button" title="Search">
+						 <span class="icon magnifier">&nbsp;</span>
+						 <span class="hidden">Search</span>
+					 </button>
+					 <div class="clear"></div>
+				 </div>
+			 </form>
+		 </div>
 
 		 <a href="#" id="toggleLog" class="toggle_log">Debug</a> - 
 		 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
 		 <a href="#" id="braunschweig">goto bs</a> - 
 		 <a href="#" id="legend">legend</a>
 		 <h1>EMOL - Easy Map OverLays</h1>
-		 <!--
-		 <a href="#" id="test">test</a> - 
-		 <a href="#" id="showLocationPanel">Locations</a> - 
-		 <input type="checkbox" name="move" id="moveFeatures" onclick="toggleMoveFeatures(this);" />
-		 <label for="moveFeatures">move Feature</label>
-		 - <a href="#" id="braunschweig">goto bs</a>
-		 <input type="checkbox" id="toggleLog" class="toggle_log"/><label for="toggleLog">show log</label>
-		 <input type="checkbox" id="toggleMeasure" class="toggle_tools" /><label for="toggleMeasure">measure</label>
-		 -->
-		 <div id="zoom" style="position: absolute; right: 10px;"></div>
-
-    <div id="drawing_tools" style="display: none;">
-                <input type="radio" name="type" value="none" id="noneDrawToggle"
-                       onclick="toggleDrawControl(this);" checked="checked" />
-                <label for="noneDrawToggle">navigate</label>
-                <input type="radio" name="type" value="point" id="pointToggle" onclick="toggleDrawControl(this);" />
-                <label for="pointToggle">draw point</label>
-                <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleDrawControl(this);" />
-                <label for="lineToggle">draw line</label>
-                <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleDrawControl(this);" />
-                <label for="polygonToggle">draw polygon</label>
-    </div>
-
 	 </div>
 
 	 <div id="fooder">
@@ -368,7 +301,7 @@
 		 <span id="last_change">${nice_date}</span>
 	 </div>
 
-   <div id="informationBox" class="floatingPanel draggable hidden ui-draggable" style="display: none;">
+   <div id="legendBox" class="floatingPanel draggable hidden ui-draggable" style="display: none;">
 			<b class="handle">
 					Legend <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
 			</b>
@@ -387,9 +320,6 @@
 				<div class="legend_item">
 				<img src="img/icons/question_48px.png"/> This should not be visible if not - there is a bug in my program.
 				</div>
-				
-					
-
 			</div>
     </div>
 
@@ -399,15 +329,15 @@
             ToolBox <a href="#" class="close ui-icon ui-icon-closethick align_right" title="Close">Close</a>
         </b>
 				<div class="box">
-
                 <input type="radio" name="type" value="none" id="noneToggle"
                        onclick="toggleMeasureControl(this);" checked="checked" />
-                <label for="noneToggle">navigate</label>
+								<label for="noneToggle">navigate</label><br>
+
                 <input type="radio" name="type" value="line" id="lineToggle" onclick="toggleMeasureControl(this);" />
-                <label for="lineToggle">measure distance</label>
+								<label for="lineToggle">measure distance</label><br>
 
                 <input type="radio" name="type" value="polygon" id="polygonToggle" onclick="toggleMeasureControl(this);" />
-                <label for="polygonToggle">measure area</label>
+								<label for="polygonToggle">measure area</label><br>
 
 								<div id="output">messung:</div>
 				</div>
