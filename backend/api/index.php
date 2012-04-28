@@ -70,7 +70,7 @@ function getFeatures($filter, $bbox)
 }
 
 
-function getDetails($id, $type)
+function getDetails($id, $type, $version)
 {
 	$details = null;
 
@@ -101,7 +101,12 @@ function getDetails($id, $type)
 
 		while ($row = mysql_fetch_assoc($result)) {
 		//echo implode(":",$row) . "<br>";
-			$details->attributs[] = array( "k" => $row['k'], "v" => $row['v']);
+			switch($version) {
+				case 1: $details->attributs[$row['k']] = $row['v'];
+								break;
+				default:
+								$details->attributs[] = array( "k" => $row['k'], "v" => $row['v']);
+			}
 		}
 	}else{
 		die("Type not supported");
@@ -138,7 +143,10 @@ else if(isset($_GET['id']))
 {
 	//returns all relevant details to this object
 	if (connect($hostname, $db_user, $db_password, $database_name)) {
-		$details = getDetails($_GET['id'],"node");
+		$version = 0;
+		if (isset($_GET['v'])) //version
+			$version = $_GET['v'];
+			$details = getDetails($_GET['id'],"node",$version);
 		echo $_GET['callback']. '(' . json_encode($details) . ');';
 	}
 } else {
