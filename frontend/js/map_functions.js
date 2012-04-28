@@ -216,6 +216,12 @@ function getBounds()
 
 function onFeatureSelect(evt) {
 	feature = evt.feature;
+	//TODO get the icon path out of the feature
+	layer = map.getLayer("OpenLayers.Layer.Vector.Organic_94");
+	//maps_debug("icon: "+layer.features.styleMap.styles.default.context.getIcon(feature));
+	icon = layer.styleMap.styles.default.context.getIcon(feature);
+	maps_debug("icon: "+icon);
+	$("#poiIcon").attr("src",icon);
 	getDetails(feature.fid);
 
   $(".InfoPanel").hide();

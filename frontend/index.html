@@ -225,6 +225,13 @@
 						line-height: 18px;
 			}
 
+			body {
+				background: -moz-linear-gradient(center top ,
+				#AAAAAA 0%, #EFEFEF 40px, #888 65px, #999 80px, #efefef 100%) 
+				no-repeat fixed 0 0 #F5F4EF;
+			}
+
+
 		</style>
 
 </head>
@@ -236,6 +243,7 @@
    <div id="map" class="olMap" style="right : 250px;"></div>
 
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: none;">
+		 <img style="float:left;" id="poiIcon" src="./img/icons/question_48px.png"/>
 		 <h3 style="margin: 2px 0px 2px;">Selected Point</h3>
 		 selected features:
 		 <span id="counter">0</span><br/>
@@ -289,11 +297,15 @@
 			 </form>
 		 </div>
 
-		 <a href="#" id="toggleLog" class="toggle_log">Debug</a> - 
-		 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
-		 <a href="#" id="braunschweig">goto bs</a> - 
-		 <a href="#" id="legend">legend</a>
+		 <!--<img src="./img/icons/somewhat.png" style="float:left;"/>-->
+		 <div style="left:100px;">
+			 <a href="#" id="toggleLog" class="toggle_log">Debug</a> - 
+			 <a href="#" id="toggleMeasure" class="toggle_tools">Measure</a> - 
+			 <a href="#" id="braunschweig">goto bs</a> - 
+			 <a href="#" id="legend">legend</a>
+		 </div>
 		 <h1>EMOL - Easy Map OverLays</h1>
+
 	 </div>
 
 	 <div id="fooder">
