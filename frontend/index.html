@@ -243,20 +243,31 @@
    <div id="map" class="olMap" style="right : 250px;"></div>
 
 	 <div id="PointInfoPanel" class="InfoPanel" style="display: none;">
-		 <img style="float:left;" id="poiIcon" src="./img/icons/question_48px.png"/>
-		 <h3 style="margin: 2px 0px 2px;">Selected Point</h3>
-		 selected features:
-		 <span id="counter">0</span><br/>
-		 <a href="#" id="goto">goto </a><br/>
-		 lat: <span id="lat">0.00</span>
-		 lon: <span id="lon">0.00</span><br/>
-		 <hr/>
-		 <h3 style="margin: 1px 0px 2px;">Last change</h3> 
-		 <span id="mapper">user</span>
-		 <span id="last_change">date</span>
-		 <hr/>
-		 <h3 style="margin: 1px 0px 3px;">Describtion:</h3>
-		 <div id="describtion">desc</div>
+		 <div>
+			 <a href="#" id="goto"><img style="float:left;" id="poiIcon" src="./img/icons/question_48px.png"/></a>
+			 <h3 style="margin: 2px 0px 2px;" id="name">Unnamed POI</h3>
+			 <!--selected features:
+			 <span id="counter">0</span><br/>-->
+			 <div id="ko" style="font-size: 12px;">
+				 lat: <span id="lat">0.00</span>
+				 lon: <span id="lon">0.00</span>
+			 </div>
+		 </div>
+		 <br/>
+		 <div id="addr">
+		 </div>
+		 <br>
+		 <div id="contact">
+		 </div>
+		 <br>
+		 <div style="color: #888;">
+			 <h3 style="margin: 1px 0px 2px;">Last change</h3> 
+			 <span id="mapper">user</span>
+			 <span id="last_change">date</span>
+			 <hr/>
+			 <h3 style="margin: 1px 0px 3px;">Describtion:</h3>
+			 <div id="describtion">desc</div>
+		 </div>
 		 <hr/>
 	 </div>
 

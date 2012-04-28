@@ -275,18 +275,53 @@ function getDetails(id) {
 		var api_url = "http://bastler.bplaced.net/osm/api/";
     $.getJSON(api_url + 'index.php?callback=?', //is running :)
         {
-          id: id
+          id: id,
+					v: "1"
         },
 			function(data) {
           maps_debug('POI Details ('+data.lat+', '+data.lon+') ');
-					addNodeDetails(data);
+					addNodeDetails(data,id);
 			});
 }
 
 /*
  * shows the node details at the sidebar
  */
-function addNodeDetails(data) {
+function addNodeDetails(data,id) {
+	if (data.attributs["name"])
+		$("#PointInfoPanel > div > #name").text(data.attributs["name"]);
+	else
+		$("#PointInfoPanel > div > #name").text("Unkown POI");
+	if ((data.attributs["addr:street"])&&
+		(data.attributs["addr:housenumber"])&&
+		(data.attributs["addr:city"])&&
+		(data.attributs["addr:postcode"])) 
+	{
+		$("#PointInfoPanel > #addr").html(
+				"<b>Address:</b><br>"+
+				data.attributs["addr:street"]+" "+
+				data.attributs["addr:housenumber"]+"<br>"+
+				data.attributs["addr:postcode"]+" "+
+				data.attributs["addr:city"]
+				);
+	}else{
+		$("#PointInfoPanel > #addr").text("");
+	}
+	contact = $("#PointInfoPanel > #contact");
+	//contact.html("<b>Contact:</b><br>");
+	contact.text("");
+	if (data.attributs["website"])
+		contact.append('<a href="'+data.attributs["website"]+'">'+data.attributs["website"]+'</a><br>');
+	if (data.attributs["phone"])
+		contact.append('<a href="phone:'+data.attributs["phone"]+'">'+data.attributs["phone"]+'</a><br>');
+	if (data.attributs["contact:phone"])
+		contact.append('<a href="phone:'+data.attributs["contact:phone"]+'">'+data.attributs["contact:phone"]+'</a><br>');
+	if (data.attributs["mail"])
+		contact.append('<a href="mailto:'+data.attributs["mail"]+'">'+data.attributs["mail"]+'</a><br>');
+	if (data.attributs["contact:email"])
+		contact.append('<a href="mailto:'+data.attributs["contact:email"]+'">'+data.attributs["contact:mail"]+'</a><br>');
+
+			
 	$("#lon").text(data.lon);
 	$("#lat").text(data.lat);
 	$("#last_change").text(data.time);
@@ -295,10 +330,10 @@ function addNodeDetails(data) {
 	$("#describtion").text("");
 	// Loop attributs we got trough
 	$.each(data.attributs, function(key, value) {
-		$("#describtion").append("<b>"+value.k + " :</b> "+ value.v + "<br>");
+		$("#describtion").append("<b>"+key + " :</b> "+ value + "<br>");
 	});
 	$("#describtion").append('<br><b>Edit:</b> <a href="javascript:josm_call_for_point(' +
-		data.lon + ',' + data.lat + ');">JOSM</a><br>');
+		data.lon + ',' + data.lat + ');">JOSM</a> <b>Object ID:</b><a href="http://www.openstreetmap.org/browse/node/'+id+'">'+id+'</a><br>');
 }
 
 function josm_call_for_area() {
